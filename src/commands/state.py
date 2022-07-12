@@ -31,7 +31,8 @@ def honeywalt_start(options):
 	cowrie.start()
 
 	# Start wireguard
-	wg.start()
+	wg.start_ssh_tunnels()
+	wg.start_tunnels()
 
 	# Start traffic control
 	traffic.start_control()

@@ -162,7 +162,7 @@ def start_tunnels():
 	tunnels(state="up")
 
 
-def start():
+def start_ssh_tunnels():
 	pass
 
 
@@ -170,7 +170,7 @@ def stop_tunnels():
 	tunnels(state="down")
 
 
-def stop():
+def stop_ssh_tunnels():
 	pass
 
 
