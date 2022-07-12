@@ -1,6 +1,7 @@
 import re, sys
 
-from config import get_conf, set_conf
+from config import set_conf
+import glob
 from utils import eprint, markdown_help, to_root_path
 
 
@@ -23,7 +24,7 @@ def controller_set(options):
 	if debit is None and latency is None:
 		eprint("controller set: error: no new value was given")
 
-	conf = get_conf()
+	conf = glob.CONFIG
 
 	if debit is not None:
 		rate_unit = "[kmgt]?(bps|bit)"

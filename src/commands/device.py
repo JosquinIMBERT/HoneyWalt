@@ -1,6 +1,7 @@
 import sys
 
-from config import get_conf, set_conf
+from config import set_conf
+import glob
 from utils import eprint, find, markdown_help
 
 
@@ -18,7 +19,7 @@ def device_add(options):
 	mac_addr = options.mac_addr[0]
 	image = options.image[0]
 
-	conf = get_conf()
+	conf = glob.CONFIG
 
 	if find(conf["device"], name, "node") is not None or \
 	   find(conf["device"], mac_addr, "mac") is not None:
@@ -44,7 +45,7 @@ def device_chg(options):
 	if new_name is None and new_image is None:
 		eprint("device change: error: no new value was given")
 
-	conf = get_conf()
+	conf = glob.CONFIG
 
 	device = find(conf["device"], name, "node")
 	if device is None:

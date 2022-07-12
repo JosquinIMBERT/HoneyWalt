@@ -1,6 +1,7 @@
 import sys
 
-from config import get_conf, set_conf
+from config import set_conf
+import glob
 from utils import eprint, find, find_id, markdown_help, to_root_path
 
 
@@ -33,7 +34,7 @@ def door_add(options):
 	wg = str(options.wg[0])
 	dev = str(options.dev[0])
 
-	conf = get_conf()
+	conf = glob.CONFIG
 
 	# Check status (only add ec2 when not running)
 	running = is_running()
@@ -75,7 +76,7 @@ def door_chg(options):
 	if new_ip is None and new_wg is None and new_dev is None:
 		eprint("door change: error: no new value was given")
 	
-	conf = get_conf()
+	conf = glob.CONFIG
 
 	# Check status (only change when not running)
 	running = is_running()
@@ -110,7 +111,7 @@ def door_del(options):
 	ip = None if options.ip is None else options.ip[0]
 	wg = None if options.wg is None else options.wg[0]
 
-	conf = get_conf()
+	conf = glob.CONFIG
 
 	# Check status (only change when not running)
 	running = is_running()

@@ -1,5 +1,4 @@
-from config import get_conf
-
+import glob
 import tools.cowrie as cowrie
 import tools.traffic as traffic
 import tools.vm as vm
@@ -15,7 +14,7 @@ def honeywalt_start(options):
 	# Start the VM
 	vm.start(2)
 	sock = ControlSocket(2)
-	conf = get_conf()
+	conf = glob.CONFIG
 	wg_ports = []
 	backends = []
 	i=0
@@ -34,6 +33,9 @@ def honeywalt_start(options):
 	# Start wireguard
 	wg.start()
 
+	# Start traffic control
+	traffic.start_control()
+
 	# Start tunnels between cowrie and doors
 	cowrie.start_tunnels_to_doors()
 
@@ -43,7 +45,7 @@ def honeywalt_start(options):
 def honeywalt_commit(options):
 	vm.start(1)
 	sock = ControlSocket(1)
-	conf = get_conf()
+	conf = glob.CONFIG
 	img_name = []
 	img_user = []
 	img_pass = []
@@ -56,8 +58,10 @@ def honeywalt_commit(options):
 
 def honeywalt_stop(options):
 	cowrie.stop_tunnels()
-	#vm.stop()
-	# TODO
+	cowrie.stop()
+	wg.stop()
+	vm.stop()
+	traffic.stop_control()
 
 def honeywalt_restart(options):
 	pass

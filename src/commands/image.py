@@ -1,4 +1,5 @@
-from config import get_conf, set_conf
+from config import set_conf
+import glob
 from utils import eprint, find, markdown_help
 
 def honeywalt_image(options):
@@ -14,7 +15,7 @@ def image_add(options):
 	username = None if options.user is None else options.user[0]
 	password = None if options.password is None else options.password[0]
 
-	conf = get_conf()
+	conf = glob.CONFIG
 
 	if find(conf["image"], name, "name") is not None:
 		eprint("image add: error: image already exists")
@@ -43,7 +44,7 @@ def image_chg(options):
 	if username is None and password is None:
 		eprint("image change: error: no new value was given")
 
-	conf = get_conf()
+	conf = glob.CONFIG
 
 	image = find(conf["image"], name, "name")
 	if image is None:

@@ -1,8 +1,7 @@
 import os, sys, subprocess
 from os.path import exists
-
-from config import get_conf
 from string import Template
+
 from utils import eprint, find, find_id, kill_from_file, to_root_path
 import glob
 
@@ -10,7 +9,7 @@ import glob
 
 
 def gen_configurations():
-	conf = get_conf()
+	conf = glob.CONFIG
 	i=0
 	with open(to_root_path("var/template/cowrie_conf.txt"), "r") as temp_file:
 		temp = Template(temp_file.read())
@@ -43,7 +42,7 @@ def gen_configurations():
 
 
 def start_tunnels_to_dmz(ips):
-	conf = get_conf()
+	conf = glob.CONFIG
 	vm_ip="10.0.0.2"
 	key_path = to_root_path("var/key/id_olim")
 	i=0
@@ -66,7 +65,7 @@ def start_tunnels_to_dmz(ips):
 
 
 def start():
-	conf = get_conf()
+	conf = glob.CONFIG
 	i=0
 	template = Template("export COWRIE_CONFIG_PATH=${conf_path}; \
 		/home/cowrie/cowrie/bin/cowrie start --pidfile=${pid_path}")
@@ -82,7 +81,7 @@ def start():
 
 
 def start_tunnels_to_doors():
-	conf = get_conf()
+	conf = glob.CONFIG
 	key_path = to_root_path("var/key/id_door")
 	template = Template("ssh -f -N -M -S ${socket} \
 		-R *:${fakessh_port}:127.0.0.1:${exposed_port} \

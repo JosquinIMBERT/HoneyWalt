@@ -1,12 +1,16 @@
+from config import get_conf
+
 def init():
 	global LISTEN_PORTS
 	global BACKEND_PORTS
 	global SOCKET_PORTS
 	global CONTROL_PORT
 	global WIREGUARD_PORTS
+	global CONFIG
 	
 	LISTEN_PORTS=2000
 	BACKEND_PORTS=3000
 	SOCKET_PORTS=4000
 	CONTROL_PORT=5555
 	WIREGUARD_PORTS=6000
+	CONFIG = get_conf()
