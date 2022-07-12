@@ -55,7 +55,8 @@ def honeywalt_commit(options):
 	vm.stop()
 
 def honeywalt_stop(options):
-	vm.stop()
+	cowrie.stop_tunnels()
+	#vm.stop()
 	# TODO
 
 def honeywalt_restart(options):

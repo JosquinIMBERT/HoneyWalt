@@ -2,7 +2,7 @@ import os, signal
 from os.path import exists
 
 import glob
-from utils import eprint, to_root_path
+from utils import eprint, kill_from_file, to_root_path
 
 # TO BE TESTED: start and stop
 
@@ -26,12 +26,4 @@ def stop():
 	print("Stop olim")
 	path = to_root_path("run/vm.pid")
 	if exists(path):
-		file = open(path, "r+")
-		pid = file.read()
-		file.seek(0)
-		file.truncate()
-		file.close()
-		if pid != "":
-			pid = int(pid)
-			print("Killing VM (pid="+str(pid)+")")
-			os.kill(pid, signal.SIGTERM)
+		kill_from_file(path)
