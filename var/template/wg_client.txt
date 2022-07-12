@@ -1,6 +1,6 @@
 [Interface]
 MTU = 1400
-Address = 192.168.0.2/24
+Address = 192.168.0.${id}/24
 PrivateKey = ${vm_privkey}
 
 [Peer]

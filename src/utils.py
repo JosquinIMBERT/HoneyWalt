@@ -1,4 +1,4 @@
-import sys
+import sys, subprocess
 from os.path import abspath, dirname, join
 
 # TO BE TESTED: kill_from_file
@@ -59,6 +59,12 @@ def kill_from_file(filename, filetype="pid"):
 def markdown_help(name):
 	with open(to_root_path("doc/"+name+".md")) as file:
 		print(file.read())
+
+def run(command, error, output=False):
+	res = subprocess.run(command, shell=True ,check=True, text=True, capture_output=output)
+	if res.returncode != 0:
+		eprint(error)
+	return str(res.stdout)
 
 # get the path to a file in the application
 def to_root_path(path):

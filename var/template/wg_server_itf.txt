@@ -7,7 +7,3 @@ ListenPort = 10000
 PostUp = iptables -A POSTROUTING -t nat -s 192.168.0.0/24 -j MASQUERADE
 
 PreDown = iptables -D POSTROUTING -t nat -s 192.168.0.0/24 -j MASQUERADE
-
-[Peer]
-PublicKey = ${vm_pubkey} # VM public key
-AllowedIPs = 192.168.0.1
