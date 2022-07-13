@@ -60,6 +60,32 @@ def markdown_help(name):
 	with open(to_root_path("doc/"+name+".md")) as file:
 		print(file.read())
 
+def print_object_array(objects, fields):
+	max_length = {}
+	for field in fields:
+		max_length[field] = len(field)
+
+	for obj in objects:
+		for field in fields:
+			length = len(obj[field])
+			if length > max_length[field]:
+				max_length[field] = length
+
+	break_size = 3
+	line = ""
+	separator = ""
+	for field in fields:
+		line += field + " " * (max_length[field] - len(field) + break_size)
+		separator += "-" * max_length[field] + " " * break_size
+	print(line)
+	print(separator)
+	for obj in objects:
+		line = ""
+		for field in fields:
+			line += obj[field] + " " * (max_length[field] - len(obj[field]) + break_size)
+		print(line)
+
+
 def run(command, error, output=False):
 	res = subprocess.run(command, shell=True ,check=True, text=True, capture_output=output)
 	if res.returncode != 0:

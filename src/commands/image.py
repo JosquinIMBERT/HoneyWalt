@@ -1,12 +1,16 @@
 from config import set_conf
 import glob
-from utils import eprint, find, markdown_help
+from utils import eprint, find, markdown_help, print_object_array
 
 def honeywalt_image(options):
 	if options.img_cmd == "add":
 		image_add(options)
 	elif options.img_cmd == "change":
 		image_chg(options)
+	elif options.img_cmd == "del":
+		image_del(options)
+	elif options.img_cmd == "show":
+		image_show(options)
 	else:
 		image_help()
 
@@ -56,6 +60,15 @@ def image_chg(options):
 		image["pass"] = password
 
 	set_conf(conf)
+
+
+def image_del(options):
+	print("TODO")
+
+
+def image_show(options):
+	conf = glob.CONFIG
+	print_object_array(conf["image"], ["name", "user", "pass"])
 
 
 def image_help():

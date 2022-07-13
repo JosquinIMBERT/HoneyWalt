@@ -2,12 +2,14 @@ import re, sys
 
 from config import set_conf
 import glob
-from utils import eprint, markdown_help, to_root_path
+from utils import eprint, markdown_help, print_object_array, to_root_path
 
 
 def honeywalt_controller(options):
 	if options.ctrl_cmd == "set":
 		controller_set(options)
+	elif options.ctrl_cmd == "show":
+		controller_show(options)
 	else:
 		controller_help()
 
@@ -41,6 +43,13 @@ def controller_set(options):
 			eprint("controller set: error: invalid latency.\nRun \"honeywalt controller set help\" to see format")
 
 	set_conf(conf)
+
+
+def controller_show(options):
+	conf = glob.CONFIG
+	print("debit: "+conf["controller"]["debit"])
+	print("latency: "+conf["controller"]["latency"])
+
 
 def controller_help():
 	markdown_help("controller")

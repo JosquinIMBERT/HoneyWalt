@@ -2,7 +2,7 @@ import sys
 
 from config import set_conf
 import glob
-from utils import eprint, find, markdown_help
+from utils import eprint, find, markdown_help, print_object_array
 
 
 def honeywalt_device(options):
@@ -10,6 +10,8 @@ def honeywalt_device(options):
 		device_add(options)
 	elif options.dev_cmd == "change":
 		device_chg(options)
+	elif options.dev_cmd == "show":
+		device_show(options)
 	else:
 		device_help()
 
@@ -62,6 +64,11 @@ def device_chg(options):
 		device["image"] = new_image
 
 	set_conf(conf)
+
+
+def device_show(options):
+	conf = glob.CONFIG
+	print_object_array(conf["device"], ["node", "mac", "image"])
 
 
 def device_help():

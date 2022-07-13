@@ -61,6 +61,9 @@ def main():
 	door_del_group.add_argument('-ip', nargs=1, help='Select with the IP addess')
 	door_del_group.add_argument('-wg', nargs=1, help='Select with the Wireguard public key')
 	
+	# Door show
+	door_show_sp= door_subparsers.add_parser("show", help="Show doors")
+
 	# Door help
 	door_help_sp= door_subparsers.add_parser("help", help="Print help")
 	
@@ -75,6 +78,9 @@ def main():
 	ctrl_set_sp.add_argument("-d", "--debit", nargs=1, help="Define honeypot's outgoing traffic debit")
 	ctrl_set_sp.add_argument("-l", "--latency", nargs=1, help="Define honeypot's outgoing traffic latency")
 	
+	# Controller show
+	ctrl_show_sp= ctrl_subparsers.add_parser("show", help="Show controller")
+
 	# Controller help
 	ctrl_help_sp= ctrl_subparsers.add_parser("help", help="Print help")
 
@@ -96,6 +102,9 @@ def main():
 	dev_chg_sp.add_argument("-n", "--name", nargs=1, help="New device name", dest='new_name')
 	dev_chg_sp.add_argument("-i", "--image", nargs=1, help="New image")
 	
+	# Device show
+	dev_show_sp= dev_subparsers.add_parser("show", help="Show devices")
+
 	# Device help
 	dev_help_sp= dev_subparsers.add_parser("help", help="Print help")
 
@@ -117,6 +126,9 @@ def main():
 	img_chg_sp.add_argument("-u", "--user", nargs=1, help="New username")
 	img_chg_sp.add_argument("-p", "--password", nargs=1, help="New password")
 	
+	# Image show
+	img_show_sp= img_subparsers.add_parser("show", help="Show images")
+
 	# Image help
 	img_help_sp= img_subparsers.add_parser("help", help="Print help")
 

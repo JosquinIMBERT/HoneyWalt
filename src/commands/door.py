@@ -2,7 +2,7 @@ import sys
 
 from config import set_conf
 import glob
-from utils import eprint, find, find_id, markdown_help, to_root_path
+from utils import eprint, find, find_id, markdown_help, print_object_array, to_root_path
 
 
 def is_running():
@@ -17,6 +17,8 @@ def honeywalt_door(options):
 		door_chg(options)
 	elif options.door_cmd == "del":
 		door_del(options)
+	elif options.door_cmd == "show":
+		door_show(options)
 	else:
 		door_help()
 
@@ -129,6 +131,11 @@ def door_del(options):
 	del conf["door"][door]
 	
 	set_conf(conf)
+
+
+def door_show(options):
+	conf = glob.CONFIG
+	print_object_array(conf["door"], ["host","dev"])
 
 
 def door_help():
