@@ -3,7 +3,7 @@
 ## Description
 
 The controller is the central point of HoneyWalt.
-It controls the traffic of the attackers.
+It controls the traffic of the attackers, accepts the ssh connections and redirect them to the devices.
 It is also in charge of hosting a Virtual Machine (VM) that runs the Walt server.
 
 ## Parameters
