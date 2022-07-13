@@ -1,7 +1,7 @@
-import json
+import json, shutil, sys
 from os.path import exists
-import sys
-from utils import to_root_path
+
+from utils import *
 
 def open_conf(file, write=False):
 	if file is None:
@@ -9,14 +9,15 @@ def open_conf(file, write=False):
 	else:
 		conf_file = file
 
-	if not exists(conf_file) and not write:
-		print("The configuration file was not found.")
-		sys.exit(1)
+	if not exists(conf_file):
+		conf_dist_file = to_root_path("etc/honeywalt.cfg.dist")
+		if not exists(conf_dist_file):
+			eprint("The configuration file was not found.")
+		shutil.copyfile(conf_dist_file, conf_file)
+	if write:
+		return open(conf_file, "w")
 	else:
-		if write:
-			return open(conf_file, "w")
-		else:
-			return open(conf_file)
+		return open(conf_file)
 
 def get_conf(file=None):
 	conf_file = open_conf(file)
