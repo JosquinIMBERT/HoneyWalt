@@ -6,7 +6,7 @@ qemu-system-x86_64 \
 	-m 1G \
 	-drive file=${diskfile},index=1,format=raw,media=disk,snapshot=on \
 	-drive file=${swapfile},index=2,format=raw,media=disk \
-	-drive file=${wimgfile},index=3,format=raw,media=cdrom,snapshot=on \
+	-drive file=${wimgfile},index=3,format=raw,media=cdrom,readonly \
 	-netdev tap,id=waltout,ifname=tap-out,script=${tapout-up},downscript=${tapout-down} \
 	-device e1000,netdev=waltout \
 	-netdev bridge,id=waltnet,br=walt-net \

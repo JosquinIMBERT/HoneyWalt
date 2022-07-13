@@ -20,15 +20,15 @@ class ControlSocket:
 		self.phase = phase
 
 	def initiate(self, ports=[], backends=[], usernames=[], passwords=[], images=[]):
-		if not self.wait_boot():
+		if not self.wait("boot"): # TODO add a timer
 			eprint("ControlSocket.initiate: error: VM failed to boot")
 		self.sock.write(str(phase))
 		if self.phase == 1:
-			if self.wait_images_downloaded():
+			self.send_elems(images)
+			if self.wait("done"):
 				# Sending the users to be added to the images
 				# This will allow cowrie to connect (and will
 				# allow brut force from a node to another)
-				self.send_elems(images)
 				self.send_elems(usernames)
 				self.send_elems(passwords)
 			else:
@@ -45,16 +45,11 @@ class ControlSocket:
 
 	def ask_reboot(self, backend):
 		self.sock.write("reboot:"+backend)
-		reboot_res = self.sock.readline()
-		return reboot_res == "done"
+		return self.wait("done")
 
-	def wait_boot(self):
-		boot_res = self.sock.readline()
-		return boot_res == "boot"
-
-	def wait_images_downloaded():
-		download_res = self.sock.readline()
-		return download_res == "done"
+	def wait(self, expected_result):
+		res = self.sock.readline() # TODO add a timer
+		return res == expected_result
 
 	def send_elems(self, elems):
 		str_elems = ""
