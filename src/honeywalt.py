@@ -6,10 +6,11 @@ from commands.device import honeywalt_device
 from commands.image import honeywalt_image
 from commands.state import honeywalt_start, honeywalt_stop, honeywalt_restart, honeywalt_status
 import glob
+from utils import markdown_help
 
 
 def honeywalt_help():
-	print("Help!")
+	markdown_help("honeywalt")
 
 
 
