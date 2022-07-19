@@ -2,7 +2,7 @@ import os, sys, subprocess
 from os.path import exists
 from string import Template
 
-from utils import eprint, find, find_id, kill_from_file, to_root_path
+from utils import *
 import glob
 
 # TO BE TESTED: start_tunnels_to_dmz, start, start_tunnels_to_doors

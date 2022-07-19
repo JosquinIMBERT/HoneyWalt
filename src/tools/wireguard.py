@@ -2,7 +2,7 @@ import subprocess
 from string import Template
 
 import glob
-from utils import eprint, run
+from utils import *
 
 
 # Generate the (public and private) keys of the wireguard servers and clients
@@ -129,6 +129,7 @@ def gen_configurations(serv_privkeys, serv_pubkeys, cli_privkeys, cli_pubkeys, d
 		res = run(scp_cmd, error_msg)
 		i+=1
 
+
 def tunnels(state="up"):
 	conf = glob.CONFIG
 
@@ -164,17 +165,78 @@ def start_tunnels():
 	tunnels(state="up")
 
 
-def start_ssh_tunnels():
-	pass
+def start_socat_tunnels():
+	conf = glob.CONFIG
+
+	remote_cmd_temp = Template("ssh root@${ip} -p ${port} -i ${key} \"${cmd}\"")
+	ssh_door_key = to_root_path("var/key/id_door")
+	ssh_vm_key = to_root_path("var/key/id_olim")
+
+	# socat on server side
+	serv_cmd = "socat TCP-LISTEN:10000 UDP-CONNECT:127.0.0.1:51820 &"
+	for door in conf["door"]:
+		serv_remote_cmd = remote_cmd_temp.substitute({
+			"ip":door["host"],
+			"port":door["realssh"],
+			"key":ssh_door_key,
+			"cmd":serv_cmd
+		})
+		error_msg = "wireguard.start_socat_tunnels: error: ssh command failed"
+		run(serv_remote_cmd, error_msg)
+
+	# socat on controller
+	cli_cmd_temp = "socat UDP-LISTEN:${port} TCP-CONNECT:${door_ip}:10000 &"
+	i=0
+	for dev in conf["device"]:
+		door = find(conf["door"], dev["node"], "dev")
+		if door is None:
+			eprint("wireguard.start_socat_tunnels: error: no door for device "+dev["node"])
+		else:
+			cli_cmd = cli_cmd_temp.substitute({
+				"port":glob.WIREGUARD_PORTS+i,
+				"door_ip":door["host"],
+			})
+			cli_remote_cmd = remote_cmd_temp.substitute({
+				"ip":"10.0.0.2",
+				"port":22,
+				"key":ssh_vm_key,
+				"cmd":cli_cmd
+				})
+			error_msg = "wireguard.start_socat_tunnels: error: ssh command failed"
+			run(cli_remote_cmd, error_msg)
+		i+=1
 
 
 def stop_tunnels():
 	tunnels(state="down")
 
 
-def stop_ssh_tunnels():
-	pass
+def stop_socat_tunnels():
+	conf = glob.CONFIG
 
+	remote_cmd_temp = Template("ssh root@${ip} -p ${port} -i ${key} \"${cmd}\"")
+	ssh_door_key = to_root_path("var/key/id_door")
+	ssh_vm_key = to_root_path("var/key/id_olim")
+
+	for door in conf["door"]:
+		serv_remote_cmd = remote_cmd_temp.substitute({
+			"ip":door["host"],
+			"port":door["realssh"],
+			"key":ssh_door_key,
+			"cmd":"killall socat"
+		})
+		error_msg = "wireguard.stop_socat_tunnels: error: failed to kill socat on a door"
+		run(serv_remote_cmd, error_msg)
+
+	vm_remote_cmd = remote_cmd_temp.substitute({
+		"ip":"10.0.0.2",
+		"port":22,
+		"key":ssh_vm_key,
+		"cmd":"killall socat"
+	})
+	error_msg = "wireguard.stop_socat_tunnels: error: failed to kill socat on VM"
+	run(vm_remote_cmd, error_msg)
 
 def change_device_server():
+	# TODO
 	pass

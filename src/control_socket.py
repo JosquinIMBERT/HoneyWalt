@@ -3,7 +3,7 @@ import threading
 import os
 import sys
 
-from utils import eprint
+from utils import *
 
 # TODO: check how to use untrusted/unsafe strings
 #		(when checking the values returned by the

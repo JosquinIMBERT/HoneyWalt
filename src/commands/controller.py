@@ -2,7 +2,7 @@ import re, sys
 
 from config import set_conf
 import glob
-from utils import eprint, markdown_help, print_object_array, to_root_path
+from utils import *
 
 
 def honeywalt_controller(options):
