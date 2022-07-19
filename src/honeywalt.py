@@ -43,23 +43,17 @@ def main():
 	# Add a door
 	door_add_sp = door_subparsers.add_parser("add", help="Add a door")
 	door_add_sp.add_argument("ip", nargs=1, help="Public IP address")
-	door_add_sp.add_argument("wg", nargs=1, help="Wireguard public key")
 	door_add_sp.add_argument("dev", nargs=1, help="Backend device")
 	
 	# Change a door
 	door_chg_sp = door_subparsers.add_parser("change", help="Change a door information")
-	door_chg_group = door_chg_sp.add_mutually_exclusive_group(required=True)
-	door_chg_group.add_argument('-ip', nargs=1, help='Select with the IP addess')
-	door_chg_group.add_argument('-wg', nargs=1, help='Select with the Wireguard public key')
+	door_chg_sp.add_argument('ip', nargs=1, help='Select with the IP addess')
 	door_chg_sp.add_argument("-i", "--ip-address", nargs=1, help="New IP address")
-	door_chg_sp.add_argument("-p", "--wg-public-key", nargs=1, help="New wireguard public key")
 	door_chg_sp.add_argument("-d", "--device", nargs=1, help="New device name")
 
 	# Delete a door
 	door_del_sp = door_subparsers.add_parser("del", help="Delete a door")
-	door_del_group = door_del_sp.add_mutually_exclusive_group(required=True)
-	door_del_group.add_argument('-ip', nargs=1, help='Select with the IP addess')
-	door_del_group.add_argument('-wg', nargs=1, help='Select with the Wireguard public key')
+	door_del_sp.add_argument('ip', nargs=1, help='Select with the IP addess')
 	
 	# Door show
 	door_show_sp= door_subparsers.add_parser("show", help="Show doors")

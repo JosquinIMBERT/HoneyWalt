@@ -33,7 +33,6 @@ def door_pubkey_instructions():
 
 def door_add(options):
 	ip = str(options.ip[0])
-	wg = str(options.wg[0])
 	dev = str(options.dev[0])
 
 	conf = glob.CONFIG
@@ -57,8 +56,7 @@ def door_add(options):
 	new_door = {
 		"host":ip,
 		"realssh":1312,
-		"dev":dev,
-		"wg":wg
+		"dev":dev
 	}
 	conf["door"] += [ new_door ]
 	set_conf(conf)
@@ -70,12 +68,10 @@ def door_add(options):
 
 
 def door_chg(options):
-	ip = None if options.ip is None else options.ip[0]
-	wg = None if options.wg is None else options.wg[0]
+	ip = options.ip[0]
 	new_ip = None if options.ip_address is None else options.ip_address[0]
-	new_wg = None if options.wg_public_key is None else options.wg_public_key[0]
 	new_dev = None if options.device is None else options.device[0]
-	if new_ip is None and new_wg is None and new_dev is None:
+	if new_ip is None and new_dev is None:
 		eprint("door change: error: no new value was given")
 	
 	conf = glob.CONFIG
@@ -86,18 +82,13 @@ def door_chg(options):
 		eprint("door change: error: HoneyWalt is running. Stop it and try again")
 
 	# Find the door
-	if ip is not None:
-		door = find(conf["door"], ip, "host")
-	else:
-		door = find(conf["door"], wg, "wg")
+	door = find(conf["door"], ip, "host")
 	if door is None:
 		eprint("door change: error: door not found")
 
 	# Update the fields
 	if new_ip is not None:
 		door["host"] = new_ip
-	if new_wg is not None:
-		door["wg"] = new_wg
 	if new_dev is not None:
 		door["dev"] = new_dev
 
@@ -110,8 +101,7 @@ def door_chg(options):
 
 
 def door_del(options):
-	ip = None if options.ip is None else options.ip[0]
-	wg = None if options.wg is None else options.wg[0]
+	ip = options.ip[0]
 
 	conf = glob.CONFIG
 
@@ -121,10 +111,7 @@ def door_del(options):
 		eprint("door change: error: HoneyWalt is running. Stop it and try again")
 
 	# Find the door
-	if ip is not None:
-		door = find_id(conf["door"], ip, "host")
-	else:
-		door = find_id(conf["door"], wg, "wg")
+	door = find_id(conf["door"], ip, "host")
 	if door == -1:
 		eprint("door change: error: door not found")
 

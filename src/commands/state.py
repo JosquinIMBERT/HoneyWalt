@@ -10,6 +10,8 @@ def honeywalt_start(options):
 	regen = not options.no_regen
 	if regen:
 		cowrie.gen_configurations()
+		wireguard.gen_keys()
+		wireguard.gen_configurations()
 
 	# Start the VM
 	vm.start(2)
