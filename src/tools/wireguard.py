@@ -196,14 +196,8 @@ def start_socat_tunnels():
 				"port":glob.WIREGUARD_PORTS+i,
 				"door_ip":door["host"],
 			})
-			cli_remote_cmd = remote_cmd_temp.substitute({
-				"ip":"10.0.0.2",
-				"port":22,
-				"key":ssh_vm_key,
-				"cmd":cli_cmd
-				})
-			error_msg = "wireguard.start_socat_tunnels: error: ssh command failed"
-			run(cli_remote_cmd, error_msg)
+			error_msg = "wireguard.start_socat_tunnels: error: socat command failed"
+			run(cli_cmd, error_msg)
 		i+=1
 
 
