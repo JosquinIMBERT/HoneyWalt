@@ -10,8 +10,6 @@ def honeywalt_start(options):
 	regen = not options.no_regen
 	if regen:
 		cowrie.gen_configurations()
-		wireguard.gen_keys()
-		wireguard.gen_configurations()
 
 	# Start the VM
 	vm.start(2)
@@ -25,6 +23,16 @@ def honeywalt_start(options):
 		backends += [ dev["node"] ]
 		i+=1
 	ips = sock.initiate(ports=wg_ports, backends=backends)
+
+	if regen:
+		serv_privkeys, serv_pubkeys, cli_privkeys, cli_pubkeys = wireguard.gen_keys()
+		wireguard.gen_configurations(
+			serv_privkeys,
+			serv_pubkeys,
+			cli_privkeys,
+			cli_pubkeys,
+			ips
+		)
 	
 	# Start tunnels between cowrie and devices
 	cowrie.start_tunnels_to_dmz(ips)
