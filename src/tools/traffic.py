@@ -1,5 +1,3 @@
-# TODO
-
 def start_control():
 	pass
 
