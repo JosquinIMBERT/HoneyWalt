@@ -41,7 +41,7 @@ def gen_keys():
 	return serv_privkeys, serv_pubkeys, cli_privkeys, cli_pubkeys
 
 
-def gen_configurations(serv_privkeys, serv_pubkeys, cli_privkeys, cli_pubkeys, dev_ips):
+def gen_configurations(serv_privkeys, serv_pubkeys, cli_privkeys, cli_pubkeys):
 	conf = glob.CONFIG
 
 	# General variables
@@ -93,7 +93,7 @@ def gen_configurations(serv_privkeys, serv_pubkeys, cli_privkeys, cli_pubkeys, d
 		server_id = find_id(conf["door"], dev["node"], "dev")
 		client_config = client_temp.substitute({
 			"table": glob.WIREGUARD_PORTS+i,
-			"dev_ip": dev_ips[i],
+			"dev_ip": dev["ip"],
 			"id": i,
 			"vm_privkey": cli_privkeys[i],
 			"server_pubkey": serv_pubkeys[server_id],

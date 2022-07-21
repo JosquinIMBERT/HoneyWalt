@@ -7,12 +7,17 @@ import tools.wireguard as wg
 
 # Start HoneyWalt
 def honeywalt_start(options):
-	# TODO: Check if changes were commited
+	conf = glob.CONFIG
+
+	# Check if changes were commited
+	if conf["need_commit"] == "Empty":
+		eprint("Your configuration is empty")
+	elif conf["need_commit"] == "True":
+		eprint("You need to commit your configuration before to run HoneyWalt")
 
 	# Start the VM
 	vm.start(2)
 	glob.VM_SOCK = ControlSocket(2)
-	conf = glob.CONFIG
 	wg_ports = []
 	backends = []
 	i=0
@@ -39,15 +44,11 @@ def honeywalt_start(options):
 	cowrie.start_tunnels_to_doors()
 
 
-def write_ips(ips):
-	conf = glob.CONFIG
-
+def conf_add_ips(ips):
 	i=0
-	for dev in conf["device"]:
+	for dev in glob.CONFIG["device"]:
 		dev["ip"] = ips[i]
 		i+=1
-
-	set_conf(conf)
 
 # Commit some persistent information on the VM so it is taken
 # into acount on the next boot
@@ -59,7 +60,6 @@ def honeywalt_commit(options):
 
 	vm.start(1)
 	glob.VM_SOCK = ControlSocket(1)
-	conf = glob.CONFIG
 	img_name = []
 	img_user = []
 	img_pass = []
@@ -69,7 +69,7 @@ def honeywalt_commit(options):
 		img_pass += [ img["pass"] ]
 	ips = glob.VM_SOCK.initiate(images=img_name, usernames=img_user, passwords=img_pass)
 
-	write_ips(ips)
+	conf_add_ips(ips)
 	
 	# Generate and distribute wireguard configurations
 	if regen:
@@ -78,9 +78,10 @@ def honeywalt_commit(options):
 			serv_privkeys,
 			serv_pubkeys,
 			cli_privkeys,
-			cli_pubkeys,
-			ips
+			cli_pubkeys
 		)
+
+	set_conf(conf, need_commit=False)
 
 	vm.stop()
 

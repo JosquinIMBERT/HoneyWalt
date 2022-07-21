@@ -25,7 +25,8 @@ def get_conf(file=None):
 	conf_file.close()
 	return conf
 
-def set_conf(conf, file=None):
+def set_conf(conf, file=None, need_commit=True):
+	conf["need_commit"] = str(need_commit)
 	conf_file = open_conf(file, write=True)
 	conf_file.write(json.dumps(conf, indent=4))
 	conf_file.close()
