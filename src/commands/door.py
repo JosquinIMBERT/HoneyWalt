@@ -25,7 +25,7 @@ def honeywalt_door(options):
 
 def door_pubkey_instructions():
 	print("Before to use it, you should copy the following public key to your door's .ssh/authorized_keys file for root:")
-	with open(to_root_path("var/key/id_door.pub")) as file:
+	with open(glob.DOOR_PUB_KEY) as file:
 		key = file.read()
 		print(key)
 		file.close()

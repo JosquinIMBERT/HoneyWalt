@@ -13,7 +13,7 @@ def honeywalt_start(options):
 
 	# Start the VM
 	vm.start(2)
-	sock = ControlSocket(2)
+	glob.VM_SOCK = ControlSocket(2)
 	conf = glob.CONFIG
 	wg_ports = []
 	backends = []
@@ -22,7 +22,7 @@ def honeywalt_start(options):
 		wg_ports += [ glob.WIREGUARD_PORTS+i ]
 		backends += [ dev["node"] ]
 		i+=1
-	ips = sock.initiate(ports=wg_ports, backends=backends)
+	ips = glob.VM_SOCK.initiate(ports=wg_ports, backends=backends)
 
 	if regen:
 		serv_privkeys, serv_pubkeys, cli_privkeys, cli_pubkeys = wireguard.gen_keys()

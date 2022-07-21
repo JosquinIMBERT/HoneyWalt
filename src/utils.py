@@ -90,7 +90,37 @@ def run(command, error, output=False):
 	res = subprocess.run(command, shell=True ,check=True, text=True, capture_output=output)
 	if res.returncode != 0:
 		eprint(error)
-	return str(res.stdout)
+	if output:
+		return str(res.stdout)
+	else:
+		return None
+
+
+def door_run(door, cmd, err="", output=False):
+	ssh_temp = Template("ssh root@${ip} -i {keypath} -p {port} \"${command}\"")
+
+	ssh_cmd = ssh_temp.substitute({
+		"ip": door["host"],
+		"keypath": glob.DOOR_PRIV_KEY,
+		"port": door["realssh"],
+		"command": cmd
+	})
+
+	return run(ssh_cmd, error=err, output=output)
+
+
+def vm_run(cmd, err="", output=False):
+	ssh_temp = Template("ssh root@${ip} -i {keypath} -p {port} \"${command}\"")
+
+	ssh_cmd = ssh_temp.substitute({
+		"ip": glob.VM_IP,
+		"keypath": glob.VM_PRIV_KEY,
+		"port": 22,
+		"command": cmd
+	})
+
+	return run(ssh_cmd, error=err, output=output)
+
 
 # get the path to a file in the application
 def to_root_path(path):

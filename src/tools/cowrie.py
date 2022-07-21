@@ -44,7 +44,6 @@ def gen_configurations():
 def start_tunnels_to_dmz(ips):
 	conf = glob.CONFIG
 	vm_ip="10.0.0.2"
-	key_path = to_root_path("var/key/id_olim")
 	i=0
 	template = Template("ssh -f -N -M -S ${socket} \
 		-L ${port}:${ip}:22 \
@@ -56,7 +55,7 @@ def start_tunnels_to_dmz(ips):
 			"port": glob.BACKEND_PORTS+i,
 			"ip": ips[i],
 			"vm_ip": vm_ip,
-			"key_path": key_path
+			"key_path": glob.VM_PRIV_KEY
 		})
 		res = subprocess.run(tunnel_cmd, shell=True ,check=True, text=True)
 		if res.returncode != 0:
@@ -82,7 +81,6 @@ def start():
 
 def start_tunnels_to_doors():
 	conf = glob.CONFIG
-	key_path = to_root_path("var/key/id_door")
 	template = Template("ssh -f -N -M -S ${socket} \
 		-R *:${fakessh_port}:127.0.0.1:${exposed_port} \
 		-i ${key_path} \
@@ -95,7 +93,7 @@ def start_tunnels_to_doors():
 			"socket": to_root_path("run/ssh/cowrie-out/sock"+str(i)),
 			"fakessh_port": 22,
 			"exposed_port": glob.LISTEN_PORTS+dev_id,
-			"key_path": key_path,
+			"key_path": glob.DOOR_PRIV_KEY,
 			"host": door["host"],
 			"realssh_port": door["realssh"]
 		})
@@ -108,8 +106,8 @@ def start_tunnels_to_doors():
 def stop_tunnels():
 	for p in ["run/ssh/cowrie-dmz", "run/ssh/cowrie-out"]:
 		path = to_root_path(p)
-		for pidpath in os.listdir(path):
-			kill_from_file(os.path.join(path, pidpath), type="ssh")
+		for killpath in os.listdir(path):
+			kill_from_file(os.path.join(path, killpath), type="ssh")
 
 
 def stop():
