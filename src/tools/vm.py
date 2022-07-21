@@ -22,8 +22,13 @@ def start(phase):
 	if res.returncode != 0:
 		eprint("Error: failed to start the VM")
 
+
+def state():
+	pidpath = to_root_path("run/vm.pid")
+	return is_pid(pidpath)
+
+
 def stop():
-	print("Stop olim")
 	path = to_root_path("run/vm.pid")
 	if exists(path):
 		kill_from_file(path)

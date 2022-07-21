@@ -111,3 +111,10 @@ def stop():
 	path = to_root_path("run/cowrie/pid")
 	for pidpath in os.listdir(path):
 		kill_from_file(os.path.join(path, pidpath))
+
+
+def state():
+	# code from https://stackoverflow.com/questions/2632205/how-to-count-the-number-of-files-in-a-directory-using-python#2632251
+	DIR = to_root_path("run/cowrie/pid")
+	nb_pids = len([name for name in os.listdir(DIR) if os.path.isfile(os.path.join(DIR, name)) and name.endswith(".pid") and is_pid(os.path.join(DIR, name))])
+	return nb_pids

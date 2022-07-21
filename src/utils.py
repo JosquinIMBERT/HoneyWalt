@@ -1,5 +1,5 @@
 import sys, subprocess
-from os.path import abspath, dirname, join
+from os.path import abspath, dirname, exists, join
 
 # TO BE TESTED: kill_from_file
 
@@ -128,3 +128,11 @@ def vm_run(cmd, err="", output=False):
 def to_root_path(path):
 	root_path = get_root_path()
 	return join(root_path, path)
+
+def is_pid(file):
+	if exists(file):
+		with open(file, "r") as pidfile:
+			pid = pidfile.read()
+			if pid != "":
+				return str(int(pid))
+	return None

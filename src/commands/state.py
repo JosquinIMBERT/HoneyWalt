@@ -43,12 +43,6 @@ def honeywalt_start(options):
 	cowrie.start_tunnels_to_doors()
 
 
-def conf_add_ips(ips):
-	i=0
-	for dev in glob.CONFIG["device"]:
-		dev["ip"] = ips[i]
-		i+=1
-
 # Commit some persistent information on the VM so it is taken
 # into acount on the next boot
 def honeywalt_commit(options):
@@ -76,7 +70,10 @@ def honeywalt_commit(options):
 		devs += [ dev["node"] ]
 	ips = glob.VM_SOCK.initiate(backends=devs, images=img_name, usernames=img_user, passwords=img_pass)
 
-	conf_add_ips(ips)
+	i=0
+	for dev in glob.CONFIG["device"]:
+		dev["ip"] = ips[i]
+		i+=1
 	
 	# Generate and distribute wireguard configurations
 	if regen:
@@ -103,6 +100,24 @@ def honeywalt_restart(options):
 	pass
 	# TODO
 
-def honeywalt_status(options):
-	pass
-	# TODO
+def honeywalt_status(options, show=True):
+	# VM
+	vm_pid = vm.state()
+	if show:
+		if vm_pid is not None:
+			print("The VM is running with pid "+vm_pid)
+		print("The VM is not running")
+	
+	# Cowrie
+	nb_cowrie_pids = cowrie.state()
+	if show:
+		print("There are "+str(nb_cowrie_pids)+" running instance(s) of cowrie")
+	
+	# Configuration
+	nb_devs = len(glob.CONFIG["device"])
+	nb_doors= len(glob.CONFIG["door"])
+	if show:
+		print("There are "+str(nb_doors)+" door(s) and "+str(nb_devs)+" device(s)")
+
+	# Return true if it is running
+	return vm_pid is not None and nb_cowrie_pids>0 and nb_devs>0 and nb_doors>0
