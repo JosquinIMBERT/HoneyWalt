@@ -39,7 +39,17 @@ def gen_keys():
 	return serv_privkeys, serv_pubkeys, cli_privkeys, cli_pubkeys
 
 
+def del_configurations():
+	# Local
+	path = to_root_path("run/wireguard")
+	delete(path, suffix=".conf")
+	# VM
+	error_msg = "wireguard:del_configurations: error: failed to delete vm configurations"
+	vm_run("rm /etc/wireguard/*")
+
+
 def gen_configurations(serv_privkeys, serv_pubkeys, cli_privkeys, cli_pubkeys):
+	del_configurations()
 	# General variables
 	conf_path = to_root_path("run/wireguard/")
 	scp_temp = Template("scp "+conf_path+"${file} \
@@ -55,7 +65,7 @@ def gen_configurations(serv_privkeys, serv_pubkeys, cli_privkeys, cli_pubkeys):
 	i=0
 	for door in glob.CONFIG["door"]:
 		# Generate Configuration
-		conf_filename = "server"+str(i)
+		conf_filename = "server"+str(i)+".conf"
 		server_config = server_itf_temp.substitute({
 			"server_privkey": serv_privkeys[i]
 		})
@@ -85,7 +95,7 @@ def gen_configurations(serv_privkeys, serv_pubkeys, cli_privkeys, cli_pubkeys):
 	i=0
 	for dev in glob.CONFIG["device"]:
 		# Generate configuration
-		conf_filename = "client"+str(i)
+		conf_filename = "client"+str(i)+".conf"
 		server_id = find_id(glob.CONFIG["door"], dev["node"], "dev")
 		client_config = client_temp.substitute({
 			"table": glob.WIREGUARD_PORTS+i,

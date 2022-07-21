@@ -8,7 +8,13 @@ import glob
 # TO BE TESTED: start_tunnels_to_dmz, start, start_tunnels_to_doors
 
 
+def del_configurations():
+	path = to_root_path("run/cowrie/conf")
+	delete(path, suffix=".conf")
+
+
 def gen_configurations():
+	del_configurations()
 	conf = glob.CONFIG
 	i=0
 	with open(to_root_path("var/template/cowrie_conf.txt"), "r") as temp_file:
@@ -17,9 +23,8 @@ def gen_configurations():
 		img = find(conf["image"], dev["image"], "name")
 		if img is None:
 			eprint("cowrie.gen_configurations: Error: image not found for device "+dev["node"])
-		else:
-			backend_user = img["user"]
-			backend_pass = img["pass"]
+		backend_user = img["user"]
+		backend_pass = img["pass"]
 		str_i = str(i)
 		download_path = to_root_path("run/cowrie/download/"+str_i+"/")
 		if not exists(download_path):

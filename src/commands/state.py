@@ -6,6 +6,7 @@ import tools.vm as vm
 import tools.wireguard as wg
 from utils import *
 
+
 # Start HoneyWalt
 def honeywalt_start(options):
 	# Check if changes were commited
@@ -13,6 +14,11 @@ def honeywalt_start(options):
 		eprint("Your configuration is empty")
 	elif glob.CONFIG["need_commit"] == "True":
 		eprint("You need to commit your configuration before to run HoneyWalt")
+
+	delete(to_root_path("run/cowrie/pid"), suffix=".pid")
+	delete(to_root_path("run/ssh/cowrie-dmz"), suffix=".pid")
+	delete(to_root_path("run/ssh/cowrie-out"), suffix=".pid")
+	delete(to_root_path("run/wg_tcp_adapter"), suffix=".pid")
 
 	# Start the VM
 	vm.start(2)
@@ -46,6 +52,9 @@ def honeywalt_start(options):
 # Commit some persistent information on the VM so it is taken
 # into acount on the next boot
 def honeywalt_commit(options):
+	if is_running():
+		eprint("honeywalt_commit: error: please stop HoneyWalt before to commit")
+
 	if glob.CONFIG["need_commit"] == "Empty":
 		eprint("Your configuration is empty")
 	elif glob.CONFIG["need_commit"] == "False":
@@ -89,6 +98,7 @@ def honeywalt_commit(options):
 
 	vm.stop()
 
+
 def honeywalt_stop(options):
 	cowrie.stop_tunnels()
 	cowrie.stop()
@@ -96,28 +106,30 @@ def honeywalt_stop(options):
 	vm.stop()
 	traffic.stop_control()
 
+
 def honeywalt_restart(options):
 	pass
 	# TODO
 
-def honeywalt_status(options, show=True):
+
+def honeywalt_status(options):
+	cowrie.del_configurations()
 	# VM
 	vm_pid = vm.state()
-	if show:
-		if vm_pid is not None:
-			print("The VM is running with pid "+vm_pid)
-		print("The VM is not running")
+	if vm_pid is not None:
+		print("The VM is running with pid "+vm_pid)
+	print("The VM is not running")
 	
 	# Cowrie
 	nb_cowrie_pids = cowrie.state()
-	if show:
-		print("There are "+str(nb_cowrie_pids)+" running instance(s) of cowrie")
+	print("There are "+str(nb_cowrie_pids)+" running instance(s) of cowrie")
 	
 	# Configuration
 	nb_devs = len(glob.CONFIG["device"])
 	nb_doors= len(glob.CONFIG["door"])
-	if show:
-		print("There are "+str(nb_doors)+" door(s) and "+str(nb_devs)+" device(s)")
+	print("There are "+str(nb_doors)+" door(s) and "+str(nb_devs)+" device(s)")
 
-	# Return true if it is running
-	return vm_pid is not None and nb_cowrie_pids>0 and nb_devs>0 and nb_doors>0
+
+# We consider the state of the VM determines whether HoneyWalt is running or not
+def is_running():
+	return vm.state() is not None

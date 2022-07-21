@@ -136,3 +136,10 @@ def is_pid(file):
 			if pid != "":
 				return str(int(pid))
 	return None
+
+
+def delete(directory, suffix=""):
+	for name in os.listdir(directory):
+		file = os.path.join(directory,name)
+		if file.endswith(suffix):
+			os.remove(file)
