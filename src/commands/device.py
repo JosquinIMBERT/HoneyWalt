@@ -68,7 +68,7 @@ def device_chg(options):
 
 def device_show(options):
 	conf = glob.CONFIG
-	print_object_array(conf["device"], ["node", "mac", "image"])
+	print_object_array(conf["device"], ["node", "mac", "image", "ip"])
 
 
 def device_help():

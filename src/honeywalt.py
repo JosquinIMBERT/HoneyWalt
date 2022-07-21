@@ -4,7 +4,7 @@ from commands.door import honeywalt_door
 from commands.controller import honeywalt_controller
 from commands.device import honeywalt_device
 from commands.image import honeywalt_image
-from commands.state import honeywalt_start, honeywalt_stop, honeywalt_restart, honeywalt_status
+from commands.state import *
 import glob
 from utils import *
 

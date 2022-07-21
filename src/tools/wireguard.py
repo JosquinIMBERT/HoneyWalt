@@ -102,7 +102,7 @@ def gen_configurations(serv_privkeys, serv_pubkeys, cli_privkeys, cli_pubkeys):
 		scp_cmd = scp_temp.substitute({
 			"file":conf_filename,
 			"addr":"10.0.0.2",
-			"remote_path":"/etc/wireguard/wg"+i+".conf",
+			"remote_path":"/etc/wireguard/wg"+str(i)+".conf",
 			"key":glob.VM_PRIV_KEY,
 			"port":22
 		})

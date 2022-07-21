@@ -67,7 +67,8 @@ def print_object_array(objects, fields):
 
 	for obj in objects:
 		for field in fields:
-			length = len(obj[field])
+			txt = obj.get(field) or ""
+			length = len(txt)
 			if length > max_length[field]:
 				max_length[field] = length
 
@@ -82,7 +83,8 @@ def print_object_array(objects, fields):
 	for obj in objects:
 		line = ""
 		for field in fields:
-			line += obj[field] + " " * (max_length[field] - len(obj[field]) + break_size)
+			txt = obj.get(field) or ""
+			line += txt + " " * (max_length[field] - len(txt) + break_size)
 		print(line)
 
 

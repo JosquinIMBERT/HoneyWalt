@@ -4,6 +4,7 @@ import tools.cowrie as cowrie
 import tools.traffic as traffic
 import tools.vm as vm
 import tools.wireguard as wg
+from utils import *
 
 # Start HoneyWalt
 def honeywalt_start(options):
@@ -51,6 +52,11 @@ def conf_add_ips(ips):
 # Commit some persistent information on the VM so it is taken
 # into acount on the next boot
 def honeywalt_commit(options):
+	if glob.CONFIG["need_commit"] == "Empty":
+		eprint("Your configuration is empty")
+	elif glob.CONFIG["need_commit"] == "False":
+		eprint("Nothing new to commit")
+
 	# Generate cowrie configuration files
 	regen = not options.no_regen
 	if regen:
