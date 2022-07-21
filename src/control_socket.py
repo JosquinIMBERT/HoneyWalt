@@ -20,7 +20,7 @@ class ControlSocket:
 		self.phase = phase
 
 	def initiate(self, backends=[], usernames=[], passwords=[], images=[]):
-		if not self.wait("boot"): # TODO add a timer
+		if not self.wait("boot"):
 			eprint("ControlSocket.initiate: error: VM failed to boot")
 		self.sock.write(str(phase))
 		if self.phase == 1:
@@ -41,9 +41,13 @@ class ControlSocket:
 		self.sock.write("reboot:"+backend)
 		return self.wait("done")
 
-	def wait(self, expected_result):
-		res = self.sock.readline() # TODO add a timer
-		return res == expected_result
+	def wait(self, expected_result, timeout=30):
+		ready, _, _ = select.select([self.sock], [], [], timeout)
+		if len(ready)>0:
+			res = self.sock.readline()
+			return res == expected_result
+		else:
+			return None
 
 	def send_elems(self, elems):
 		str_elems = ""
