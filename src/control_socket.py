@@ -31,6 +31,7 @@ class ControlSocket:
 				# allow brut force from a node to another)
 				self.send_elems(usernames)
 				self.send_elems(passwords)
+				self.send_elems(backends)
 			else:
 				eprint("ControlSocket.initiate: error: failed to download WalT images on the VM")
 			return self.recv_elems() # Returning backends IPs

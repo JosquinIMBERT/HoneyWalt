@@ -71,7 +71,10 @@ def honeywalt_commit(options):
 		img_name += [ img["name"] ]
 		img_user += [ img["user"] ]
 		img_pass += [ img["pass"] ]
-	ips = glob.VM_SOCK.initiate(images=img_name, usernames=img_user, passwords=img_pass)
+	devs = []
+	for dev in glob.CONFIG["device"]:
+		devs += [ dev["node"] ]
+	ips = glob.VM_SOCK.initiate(backends=devs, images=img_name, usernames=img_user, passwords=img_pass)
 
 	conf_add_ips(ips)
 	
