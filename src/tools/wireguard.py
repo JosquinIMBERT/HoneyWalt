@@ -9,8 +9,6 @@ from utils import *
 # May be it could be simplified (we may not neet to generate the keys on the
 # host that will use it)
 def gen_keys():
-	conf = glob.CONFIG
-
 	# Key generation template
 	keygen_cmd = "umask 077; \
 		wg genkey >privkey; \
@@ -21,7 +19,7 @@ def gen_keys():
 	# Servers keys
 	serv_privkeys = []
 	serv_pubkeys = []
-	for door in conf["door"]:
+	for door in glob.CONFIG["door"]:
 		error_msg = "wireguard.gen_keys: error: ssh command returned non-zero code"
 		res = door_run(door, keygen_cmd, err=error_msg, output=True)
 		privkey, pubkey = res.split("\n", 1)
@@ -31,7 +29,7 @@ def gen_keys():
 	# Clients keys
 	cli_privkeys = []
 	cli_pubkeys = []
-	for dev in conf["device"]:
+	for dev in glob.CONFIG["device"]:
 		error_msg = "wireguard.gen_keys: error: ssh command returned non-zero code"
 		res = vm_run(keygen_cmd, err=error_msg, output=True)
 		privkey, pubkey = res.split("\n", 1)
@@ -42,8 +40,6 @@ def gen_keys():
 
 
 def gen_configurations(serv_privkeys, serv_pubkeys, cli_privkeys, cli_pubkeys):
-	conf = glob.CONFIG
-
 	# General variables
 	conf_path = to_root_path("run/wireguard/")
 	scp_temp = Template("scp "+conf_path+"${file} \
@@ -57,7 +53,7 @@ def gen_configurations(serv_privkeys, serv_pubkeys, cli_privkeys, cli_pubkeys):
 		server_peer_temp = Template(temp_file.read())
 
 	i=0
-	for door in conf["door"]:
+	for door in glob.CONFIG["door"]:
 		# Generate Configuration
 		conf_filename = "server"+str(i)
 		server_config = server_itf_temp.substitute({
@@ -87,17 +83,17 @@ def gen_configurations(serv_privkeys, serv_pubkeys, cli_privkeys, cli_pubkeys):
 		client_temp = Template(temp_file.read())
 
 	i=0
-	for dev in conf["device"]:
+	for dev in glob.CONFIG["device"]:
 		# Generate configuration
 		conf_filename = "client"+str(i)
-		server_id = find_id(conf["door"], dev["node"], "dev")
+		server_id = find_id(glob.CONFIG["door"], dev["node"], "dev")
 		client_config = client_temp.substitute({
 			"table": glob.WIREGUARD_PORTS+i,
 			"dev_ip": dev["ip"],
 			"id": i,
 			"vm_privkey": cli_privkeys[i],
 			"server_pubkey": serv_pubkeys[server_id],
-			"server_ip": conf["door"][server_id]["host"]
+			"server_ip": glob.CONFIG["door"][server_id]["host"]
 		})
 		# Write configuration to a file
 		with open(os.path.join(conf_path, conf_filename), "w") as conf_file:
@@ -116,17 +112,15 @@ def gen_configurations(serv_privkeys, serv_pubkeys, cli_privkeys, cli_pubkeys):
 
 
 def tunnels(state="up"):
-	conf = glob.CONFIG
-
 	start_temp = Template("wg-quick "+state+" ${wg}")
 
 	wg_cmd = "wg-quick "+state+" /etc/wireguard/wg.conf"
-	for door in conf["door"]:
+	for door in glob.CONFIG["door"]:
 		error_msg = "wireguard.gen_configurations: error: ssh command returned non-zero code"
 		door_run(door, wg_cmd, err=error_msg)
 
 	i=0
-	for dev in conf["device"]:
+	for dev in glob.CONFIG["device"]:
 		wg_cmd = "wg-quick "+state+" /etc/wireguard/wg"+str(i)+".conf"
 		error_msg = "wireguard.gen_configurations: error: ssh command returned non-zero code"
 		vm_run(wg_cmd, err=error_msg)
@@ -155,7 +149,7 @@ def start_tcp_tunnels():
 		local_args = udp_lo_host+" "+str(udp_lo_port)+" "+tcp_host+" "+str(tcp_port)
 		local_cmd = "python3 .../wg_tcp_adapter.py controller "+local_args
 		proc = subprocess.Popen(local_cmd, creationflags=DETACHED_PROCESS)
-		with open(to_root_path("run/wg_tcp_tunnel/tunnel"+str(i)+".pid"), "w") as pidfile:
+		with open(to_root_path("run/wg_tcp_adapter/tunnel"+str(i)+".pid"), "w") as pidfile:
 			pidfile.write(str(proc.pid))
 
 
@@ -164,7 +158,12 @@ def stop_tunnels():
 
 
 def stop_tcp_tunnels():
-	conf = glob.CONFIG
+	for door in glob.CONFIG["door"]:
+		#TODO kill wg_tc_adapter
+		pass
+	path = to_root_path("run/wg_tcp_adapter")
+	for pidpath in os.listdir(path):
+		kill_from_file(os.path.join(path, pidpath))
 
 
 def change_device_server():
