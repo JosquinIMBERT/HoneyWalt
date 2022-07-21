@@ -147,7 +147,7 @@ def start_tcp_tunnels():
 	tcp_host = "0.0.0.0"
 	tcp_port = glob.WG_TCP_PORT
 	door_args = udp_ip+" "+str(udp_port)+" "+tcp_host+" "+str(tcp_port)
-	door_cmd = "python3 /root/wg_tcp_adapter.py door "+door_args+" &"
+	door_cmd = "python3 /root/wg_tcp_adapter.py door "+door_args+" & echo $!>/root/tunnel.pid"
 	for door in glob.CONFIG["door"]:
 		door_run(door, door_cmd)
 
@@ -169,8 +169,7 @@ def stop_tunnels():
 
 def stop_tcp_tunnels():
 	for door in glob.CONFIG["door"]:
-		#TODO kill wg_tc_adapter
-		pass
+		door_run(door, "kill $(cat /root/tunnel.pid)")
 	path = to_root_path("run/wg_tcp_adapter")
 	for pidpath in os.listdir(path):
 		kill_from_file(os.path.join(path, pidpath))
