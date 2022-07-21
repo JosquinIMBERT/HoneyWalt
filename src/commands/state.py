@@ -51,17 +51,20 @@ def honeywalt_start(options):
 
 # Commit some persistent information on the VM so it is taken
 # into acount on the next boot
-def honeywalt_commit(options):
+def honeywalt_commit(options, force=False):
 	if is_running():
 		eprint("honeywalt_commit: error: please stop HoneyWalt before to commit")
 
 	if glob.CONFIG["need_commit"] == "Empty":
 		eprint("Your configuration is empty")
-	elif glob.CONFIG["need_commit"] == "False":
+	elif glob.CONFIG["need_commit"] == "False" and not force:
 		eprint("Nothing new to commit")
 
 	# Generate cowrie configuration files
-	regen = not options.no_regen
+	if hasattr(options, "no_regen"):
+		regen = not options.no_regen
+	else:
+		regen = True
 	if regen:
 		cowrie.gen_configurations()
 
@@ -108,8 +111,14 @@ def honeywalt_stop(options):
 
 
 def honeywalt_restart(options):
-	pass
-	# TODO
+	honeywalt_stop(None)
+
+	# Generate configuration files
+	regen = options.force_regen
+	if regen:
+		honeywalt_commit(None, force=True)
+
+	honeywalt_start(None)
 
 
 def honeywalt_status(options):

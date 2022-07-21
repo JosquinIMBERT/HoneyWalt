@@ -139,6 +139,8 @@ def main():
 	#############
 	commit_subparser.add_argument("-n", "--no-regen", action="store_true", help="Do not \
 		re-generate the configuration files for Cowrie and Wireguard.")
+	restart_subparser.add_argument("-f", "--force-regen", action="store_true", help="Force \
+		the re-generation of the configuration files for Cowrie and Wireguard.")
 
 
 	#############
