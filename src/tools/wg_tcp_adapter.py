@@ -8,7 +8,7 @@ def decode_len(length):
 	return int.from_bytes(length, "big")
 
 
-def main_controller(
+def controller_tunnel(
 	udp_lo_host="127.0.0.1",
 	udp_lo_port=1111,
 	tcp_host="192.168.100.1",
@@ -45,7 +45,7 @@ def main_controller(
 				print("Connection Reset")
 
 
-def main_door(
+def door_tunnel(
 	udp_host="127.0.0.1",
 	udp_port=51820,
 	tcp_host="0.0.0.0",
@@ -85,18 +85,34 @@ def main_door(
 
 
 if __name__ == '__main__':
-	# This program is directly called only on the doors.
-	# On the controller, it is called from the app
 	parser = argparse.ArgumentParser(description='Transform UDP into TCP')
-	parser.add_argument("udp_host", nargs=1, help="IP of the UDP server") # 127.0.0.1
-	parser.add_argument("udp_port", nargs=1, help="Port of the UDP server") # 51820
-	parser.add_argument("tcp_host", nargs=1, help="IP to listen to") # 0.0.0.0
-	parser.add_argument("tcp_port", nargs=1, help="Port to listen to") # 51819
+	subparsers = parser.add_subparsers(dest="cmd", required=True)
+
+	door_subparser = subparsers.add_parser("door")
+	ctrl_subparser = subparsers.add_parser("controller")
+
+	door_subparser.add_argument("udp_host", nargs=1, help="IP of the UDP server") # 127.0.0.1
+	door_subparser.add_argument("udp_port", nargs=1, help="Port of the UDP server") # 51820
+	door_subparser.add_argument("tcp_host", nargs=1, help="IP to listen to") # 0.0.0.0
+	door_subparser.add_argument("tcp_port", nargs=1, help="Port to listen to") # 51819
+
+	ctrl_subparser.add_argument("udp_lo_host", nargs=1, help="UDP host to listen from")
+	ctrl_subparser.add_argument("udp_lo_port", nargs=1, help="UDP port to listen to")
+	ctrl_subparser.add_argument("tcp_host", nargs=1, help="TCP host to connect to")
+	ctrl_subparser.add_argument("tcp_port", nargs=1, help="TCP port to connect to")
 
 	options = parser.parse_args()
-	main_door(
-		options.udp_host,
-		options.udp_port,
-		options.tcp_host,
-		options.tcp_port
-	)
+	if(options.cmd == "door"):
+		door_tunnel(
+			options.udp_host,
+			options.udp_port,
+			options.tcp_host,
+			options.tcp_port
+		)
+	else:
+		controller_tunnel(
+			options.udp_lo_host,
+			options.udp_lo_port,
+			options.tcp_host,
+			options.tcp_port
+		)

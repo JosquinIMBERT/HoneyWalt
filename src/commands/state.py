@@ -7,12 +7,10 @@ import tools.wireguard as wg
 
 # Start HoneyWalt
 def honeywalt_start(options):
-	conf = glob.CONFIG
-
 	# Check if changes were commited
-	if conf["need_commit"] == "Empty":
+	if glob.CONFIG["need_commit"] == "Empty":
 		eprint("Your configuration is empty")
-	elif conf["need_commit"] == "True":
+	elif glob.CONFIG["need_commit"] == "True":
 		eprint("You need to commit your configuration before to run HoneyWalt")
 
 	# Start the VM
@@ -21,7 +19,7 @@ def honeywalt_start(options):
 	wg_ports = []
 	backends = []
 	i=0
-	for dev in conf["device"]:
+	for dev in glob.CONFIG["device"]:
 		wg_ports += [ glob.WIREGUARD_PORTS+i ]
 		backends += [ dev["node"] ]
 		i+=1
@@ -63,7 +61,7 @@ def honeywalt_commit(options):
 	img_name = []
 	img_user = []
 	img_pass = []
-	for img in conf["image"]:
+	for img in glob.CONFIG["image"]:
 		img_name += [ img["name"] ]
 		img_user += [ img["user"] ]
 		img_pass += [ img["pass"] ]
@@ -81,7 +79,7 @@ def honeywalt_commit(options):
 			cli_pubkeys
 		)
 
-	set_conf(conf, need_commit=False)
+	set_conf(glob.CONFIG, need_commit=False)
 
 	vm.stop()
 

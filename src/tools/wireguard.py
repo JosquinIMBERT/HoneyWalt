@@ -138,7 +138,25 @@ def start_tunnels():
 
 
 def start_tcp_tunnels():
-	conf = glob.CONFIG
+	udp_ip = "127.0.0.1"
+	udp_port = glob.WG_UDP_PORT
+	tcp_host = "0.0.0.0"
+	tcp_port = glob.WG_TCP_PORT
+	door_args = udp_ip+" "+str(udp_port)+" "+tcp_host+" "+str(tcp_port)
+	door_cmd = "python3 /root/wg_tcp_adapter.py door "+door_args+" &"
+	for door in glob.CONFIG["door"]:
+		door_run(door, door_cmd)
+
+	for dev in glob.CONFIG["device"]:
+		udp_lo_host="0.0.0.0",
+		udp_lo_port=glob.WIREGUARD_PORTS+i,
+		tcp_host=find(glob.CONFIG["door"], dev["node"], "dev")["host"],
+		tcp_port=glob.WG_TCP_PORT
+		local_args = udp_lo_host+" "+str(udp_lo_port)+" "+tcp_host+" "+str(tcp_port)
+		local_cmd = "python3 .../wg_tcp_adapter.py controller "+local_args
+		proc = subprocess.Popen(local_cmd, creationflags=DETACHED_PROCESS)
+		with open(to_root_path("run/wg_tcp_tunnel/tunnel"+str(i)+".pid"), "w") as pidfile:
+			pidfile.write(str(proc.pid))
 
 
 def stop_tunnels():
