@@ -19,7 +19,7 @@ class ControlSocket:
 		self.sock = self.socket.makefile(mode="rw")
 		self.phase = phase
 
-	def initiate(self, ports=[], backends=[], usernames=[], passwords=[], images=[]):
+	def initiate(self, backends=[], usernames=[], passwords=[], images=[]):
 		if not self.wait("boot"): # TODO add a timer
 			eprint("ControlSocket.initiate: error: VM failed to boot")
 		self.sock.write(str(phase))
@@ -33,15 +33,8 @@ class ControlSocket:
 				self.send_elems(passwords)
 			else:
 				eprint("ControlSocket.initiate: error: failed to download WalT images on the VM")
-			return None
-		else:
-			# The VM should know to which ports wireguard
-			# should send its traffic (and the corresponding
-			# backends)
-			self.send_elems(ports)
-			self.send_elems(backends)
-			ips = self.recv_elems()
-			return ips
+			return self.recv_elems() # Returning backends IPs
+		return None
 
 	def ask_reboot(self, backend):
 		self.sock.write("reboot:"+backend)
@@ -57,9 +50,9 @@ class ControlSocket:
 			str_elems += str(elem)
 		self.sock.write(str_elems)
 
-	def recv_elems(self):
+	def recv_elems(self, sep=" "):
 		elems = self.sock.readline()
-		return elems.split(" ")
+		return elems.split(sep)
 
 	def close(self):
 		self.sock.close()

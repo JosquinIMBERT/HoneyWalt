@@ -41,7 +41,7 @@ def gen_configurations():
 		i+=1
 
 
-def start_tunnels_to_dmz(ips):
+def start_tunnels_to_dmz():
 	conf = glob.CONFIG
 	vm_ip="10.0.0.2"
 	i=0
@@ -53,13 +53,12 @@ def start_tunnels_to_dmz(ips):
 		tunnel_cmd = template.substitute({
 			"socket": to_root_path("run/ssh/cowrie-dmz/sock"+str(i)),
 			"port": glob.BACKEND_PORTS+i,
-			"ip": ips[i],
+			"ip": dev["ip"],
 			"vm_ip": vm_ip,
 			"key_path": glob.VM_PRIV_KEY
 		})
-		res = subprocess.run(tunnel_cmd, shell=True ,check=True, text=True)
-		if res.returncode != 0:
-			eprint("cowrie.start_tunnels_to_dmz: error: ssh command returned non-zero code")
+		error_msg = "cowrie.start_tunnels_to_dmz: error: ssh command returned non-zero code"
+		run(tunnel_cmd, error_msg)
 		i+=1
 
 
@@ -73,9 +72,8 @@ def start():
 			"conf_path": to_root_path("run/cowrie/conf/"+str(i)+".conf"),
 			"pid_path": to_root_path("run/cowrie/pid/"+str(i)+".pid")
 		})
-		res = subprocess.run(cmd, shell=True ,check=True, text=True)
-		if res.returncode != 0:
-			eprint("cowrie.start: error: failed to start cowrie")
+		error_msg = "cowrie.start: error: failed to start cowrie"
+		run(cmd, error_msg)
 		i+=1
 
 
@@ -97,9 +95,8 @@ def start_tunnels_to_doors():
 			"host": door["host"],
 			"realssh_port": door["realssh"]
 		})
-		res = subprocess.run(tunnel_cmd, shell=True ,check=True, text=True)
-		if res.returncode != 0:
-			eprint("cowrie.start_tunnels_to_doors: error: ssh command returned non-zero code")
+		error_msg = "cowrie.start_tunnels_to_doors: error: ssh command returned non-zero code"
+		run(tunnel_cmd, error_msg)
 		i+=1
 
 

@@ -1,3 +1,4 @@
+from config import set_conf
 import glob
 import tools.cowrie as cowrie
 import tools.traffic as traffic
@@ -6,10 +7,7 @@ import tools.wireguard as wg
 
 # Start HoneyWalt
 def honeywalt_start(options):
-	# Generate cowrie configuration files
-	regen = not options.no_regen
-	if regen:
-		cowrie.gen_configurations()
+	# TODO: Check if changes were commited
 
 	# Start the VM
 	vm.start(2)
@@ -22,20 +20,10 @@ def honeywalt_start(options):
 		wg_ports += [ glob.WIREGUARD_PORTS+i ]
 		backends += [ dev["node"] ]
 		i+=1
-	ips = glob.VM_SOCK.initiate(ports=wg_ports, backends=backends)
-
-	if regen:
-		serv_privkeys, serv_pubkeys, cli_privkeys, cli_pubkeys = wireguard.gen_keys()
-		wireguard.gen_configurations(
-			serv_privkeys,
-			serv_pubkeys,
-			cli_privkeys,
-			cli_pubkeys,
-			ips
-		)
+	glob.VM_SOCK.initiate()
 	
 	# Start tunnels between cowrie and devices
-	cowrie.start_tunnels_to_dmz(ips)
+	cowrie.start_tunnels_to_dmz()
 
 	# Start cowrie
 	cowrie.start()
@@ -51,11 +39,26 @@ def honeywalt_start(options):
 	cowrie.start_tunnels_to_doors()
 
 
+def write_ips(ips):
+	conf = glob.CONFIG
+
+	i=0
+	for dev in conf["device"]:
+		dev["ip"] = ips[i]
+		i+=1
+
+	set_conf(conf)
+
 # Commit some persistent information on the VM so it is taken
 # into acount on the next boot
 def honeywalt_commit(options):
+	# Generate cowrie configuration files
+	regen = not options.no_regen
+	if regen:
+		cowrie.gen_configurations()
+
 	vm.start(1)
-	sock = ControlSocket(1)
+	glob.VM_SOCK = ControlSocket(1)
 	conf = glob.CONFIG
 	img_name = []
 	img_user = []
@@ -64,7 +67,21 @@ def honeywalt_commit(options):
 		img_name += [ img["name"] ]
 		img_user += [ img["user"] ]
 		img_pass += [ img["pass"] ]
-	sock.initiate(images=img_name, usernames=img_user, passwords=img_pass)
+	ips = glob.VM_SOCK.initiate(images=img_name, usernames=img_user, passwords=img_pass)
+
+	write_ips(ips)
+	
+	# Generate and distribute wireguard configurations
+	if regen:
+		serv_privkeys, serv_pubkeys, cli_privkeys, cli_pubkeys = wireguard.gen_keys()
+		wireguard.gen_configurations(
+			serv_privkeys,
+			serv_pubkeys,
+			cli_privkeys,
+			cli_pubkeys,
+			ips
+		)
+
 	vm.stop()
 
 def honeywalt_stop(options):

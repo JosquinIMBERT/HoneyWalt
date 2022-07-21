@@ -13,7 +13,6 @@ def honeywalt_help():
 	markdown_help("honeywalt")
 
 
-
 def main():
 	glob.init()
 	
@@ -130,8 +129,8 @@ def main():
 	#############
 	#  CONTROL  #
 	#############
-	start_subparser.add_argument("-n", "--no-regen", action="store_true", help="Do not \
-		re-generate the configuration files for Cowrie.")
+	commit_subparser.add_argument("-n", "--no-regen", action="store_true", help="Do not \
+		re-generate the configuration files for Cowrie and Wireguard.")
 
 
 	#############
