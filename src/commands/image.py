@@ -63,7 +63,19 @@ def image_chg(options):
 
 
 def image_del(options):
-	print("TODO")
+	img_name = options.name[0]
+
+	img_id = find_id(glob.CONFIG["image"], img_name, "name")
+	if img_id == -1:
+		eprint("image del: error: unable to find image "+img_name)
+
+	dev = find(glob.CONFIG["device"], glob.CONFIG["image"][img_id]["name"], "image")
+	if dev is not None:
+		eprint("image del: error: device "+dev["node"]+" uses image "+img_name)
+
+	del glob.CONFIG["image"][img_id]
+
+	set_conf(glob.CONFIG)
 
 
 def image_show(options):

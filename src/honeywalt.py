@@ -94,6 +94,10 @@ def main():
 	dev_chg_sp.add_argument("name", nargs=1, help="Name")
 	dev_chg_sp.add_argument("-n", "--name", nargs=1, help="New device name", dest='new_name')
 	dev_chg_sp.add_argument("-i", "--image", nargs=1, help="New image")
+
+	# Delete device
+	dev_del_sp = dev_subparsers.add_parser("del", help="Delete a backend device")
+	dev_del_sp.add_argument("name", nargs=1, help="Name")
 	
 	# Device show
 	dev_show_sp= dev_subparsers.add_parser("show", help="Show devices")
@@ -119,6 +123,10 @@ def main():
 	img_chg_sp.add_argument("-u", "--user", nargs=1, help="New username")
 	img_chg_sp.add_argument("-p", "--password", nargs=1, help="New password")
 	
+	# Delete image
+	img_del_sp = img_subparsers.add_parser("del", help="Delete an image")
+	img_del_sp.add_argument("name", nargs=1, help="Name")
+
 	# Image show
 	img_show_sp= img_subparsers.add_parser("show", help="Show images")
 

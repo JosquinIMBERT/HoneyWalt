@@ -5,11 +5,6 @@ import glob
 from utils import *
 
 
-def is_running():
-	# TODO: to be moved to another file and to be completed
-	return False
-
-
 def honeywalt_door(options):
 	if options.door_cmd == "add":
 		door_add(options)
@@ -36,11 +31,6 @@ def door_add(options):
 	dev = str(options.dev[0])
 
 	conf = glob.CONFIG
-
-	# Check status (only add ec2 when not running)
-	running = is_running()
-	if running:
-		eprint("door add: error: HoneyWalt is running. Stop it and try again")
 
 	# Check device (the device should be registered first)
 	device = find(conf["device"], dev, "node")
@@ -76,11 +66,6 @@ def door_chg(options):
 	
 	conf = glob.CONFIG
 
-	# Check status (only change when not running)
-	running = is_running()
-	if running:
-		eprint("door change: error: HoneyWalt is running. Stop it and try again")
-
 	# Find the door
 	door = find(conf["door"], ip, "host")
 	if door is None:
@@ -104,11 +89,6 @@ def door_del(options):
 	ip = options.ip[0]
 
 	conf = glob.CONFIG
-
-	# Check status (only change when not running)
-	running = is_running()
-	if running:
-		eprint("door change: error: HoneyWalt is running. Stop it and try again")
 
 	# Find the door
 	door = find_id(conf["door"], ip, "host")

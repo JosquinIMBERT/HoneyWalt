@@ -10,6 +10,8 @@ def honeywalt_device(options):
 		device_add(options)
 	elif options.dev_cmd == "change":
 		device_chg(options)
+	elif options.dev_cmd == "del":
+		device_del(options)
 	elif options.dev_cmd == "show":
 		device_show(options)
 	else:
@@ -64,6 +66,22 @@ def device_chg(options):
 		device["image"] = new_image
 
 	set_conf(conf)
+
+
+def device_del(options):
+	dev_name = options.name[0]
+
+	dev_id = find_id(glob.CONFIG["device"], dev_name, "node")
+	if dev_id == -1:
+		eprint("device del: error: unable to find device "+dev_name)
+
+	door = find(glob.CONFIG["door"], glob.CONFIG["device"][dev_id]["node"], "dev")
+	if door is not None:
+		eprint("device del: error: door "+door["host"]+" uses device "+dev_name)
+
+	del glob.CONFIG["device"][dev_id]
+
+	set_conf(glob.CONFIG)
 
 
 def device_show(options):
