@@ -15,7 +15,7 @@ class ControlSocket:
 		self.phase = phase
 
 	def initiate(self, backends=[], usernames=[], passwords=[], images=[]):
-		if not self.wait_confirm():
+		if not self.wait_confirm(timeout=90):
 			eprint("ControlSocket.initiate: error: VM failed to boot")
 		
 		self.send(str(self.phase))
@@ -39,19 +39,25 @@ class ControlSocket:
 		return self.wait_confirm()
 
 	def wait_confirm(self, timeout=30):
-		ready, _, _ = select.select([self.socket], [], [], timeout)
-		if len(ready)>0:
-			res = self.socket.recv(2)
-			if len(res)<=0:
-				return False
-			return res[0] == 1
-		return False
+		res = self.recv(max_iter=timeout)
+		return res[0] == "1"
 
 	def send(self, string):
 		self.sock.write(string+"\n")
 
-	def recv(self):
-		return self.sock.readline()
+	def recv(self, max_iter=30):
+		res = ""
+		i = 0
+		while True and i<max_iter:
+			i+=1
+			res = self.sock.readline()
+			if not res:
+				time.sleep(1)
+				continue
+			break
+		if i >= max_iter:
+			eprint("ControlSocket:recv: error: reached max_iter")
+		return res
 
 	def send_elems(self, elems, sep=" "):
 		str_elems = ""
