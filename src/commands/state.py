@@ -1,3 +1,5 @@
+import time
+
 from config import set_conf
 import glob
 import tools.cowrie as cowrie
@@ -5,6 +7,7 @@ import tools.traffic as traffic
 import tools.vm as vm
 import tools.wireguard as wg
 from utils import *
+from control_socket import ControlSocket
 
 
 # Start HoneyWalt
@@ -69,6 +72,7 @@ def honeywalt_commit(options, force=False):
 		cowrie.gen_configurations()
 
 	vm.start(1)
+	time.sleep(3)
 	glob.VM_SOCK = ControlSocket(1)
 	img_name = []
 	img_user = []

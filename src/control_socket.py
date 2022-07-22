@@ -1,4 +1,4 @@
-import os, socket, sys, threading
+import os, select, socket, sys, threading
 
 import glob
 from utils import *
@@ -10,21 +10,19 @@ from utils import *
 class ControlSocket:
 	def __init__(self, phase):
 		self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		#self.socket.connect()
-		self.socket.bind((glob.CONTROL_IP, glob.CONTROL_PORT))
+		self.socket.connect((glob.CONTROL_IP, glob.CONTROL_PORT))
+		self.sock = self.socket.makefile(mode="rw")
 		self.phase = phase
 
 	def initiate(self, backends=[], usernames=[], passwords=[], images=[]):
-		self.socket.listen(1)
-		self.conn_sock, self.conn_addr = self.socket.accept()
-		self.sock = self.conn_sock.makefile(mode="rw")
-
 		if not self.wait_confirm():
 			eprint("ControlSocket.initiate: error: VM failed to boot")
-		self.sock.write(str(phase))
+		
+		self.send(str(self.phase))
+		
 		if self.phase == 1:
 			self.send_elems(images)
-			if self.wait("done"):
+			if self.wait_confirm():
 				# Sending the users to be added to the images
 				# This will allow cowrie to connect (and will
 				# allow brut force from a node to another)
@@ -37,33 +35,41 @@ class ControlSocket:
 		return None
 
 	def ask_reboot(self, backend):
-		self.sock.write("reboot:"+backend)
+		self.send("reboot:"+backend)
 		return self.wait_confirm()
 
-	def wait(self, expected_result, timeout=30):
-		ready, _, _ = select.select([self.sock], [], [], timeout)
-		if len(ready)>0:
-			res = self.sock.readline()
-			return res == expected_result
-		else:
-			return None
-
 	def wait_confirm(self, timeout=30):
-		ready, _, _ = select.select([self.conn_sock], [], [], timeout)
+		ready, _, _ = select.select([self.socket], [], [], timeout)
 		if len(ready)>0:
-			return self.conn_sock.recv(1) == b"1"
+			res = self.socket.recv(2)
+			if len(res)<=0:
+				return False
+			return res[0] == b"\x01"
 		return False
 
-	def send_elems(self, elems):
+	def send(self, string):
+		self.sock.write(string+"\n")
+
+	def recv(self):
+		return self.sock.readline()
+
+	def send_elems(self, elems, sep=" "):
 		str_elems = ""
 		for elem in elems:
-			str_elems += str(elem)
-		self.sock.write(str_elems)
+			str_elems += str(elem) + sep
+		self.send(str_elems)
 
 	def recv_elems(self, sep=" "):
-		elems = self.sock.readline()
+		elems = self.recv()
 		return elems.split(sep)
 
 	def close(self):
-		self.conn_sock.close()
 		self.socket.close()
+
+
+def main():
+    socket = ControlSocket(1)
+    socket.initiate(backends=[], usernames=[], passwords=[], images=[])
+
+if __name__ == '__main__':
+        main()

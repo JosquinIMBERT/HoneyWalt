@@ -1,4 +1,4 @@
-import sys, subprocess
+import os, sys, subprocess
 from os.path import abspath, dirname, exists, join
 
 # TO BE TESTED: kill_from_file

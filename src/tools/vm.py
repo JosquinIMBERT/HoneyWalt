@@ -1,5 +1,6 @@
 import os, signal
 from os.path import exists
+from string import Template
 
 import glob
 from utils import *
@@ -14,8 +15,8 @@ def start(phase):
 		"diskfile": "/persist/disk.dd",
 		"swapfile": "/persist/swap.dd",
 		"wimgfile": "/persist/wimg.dd",
-		"tapout-up": to_root_path("src/script/tapout-up.sh"),
-		"tapout-down": to_root_path("src/script/tapout-down.sh"),
+		"tapout_up": to_root_path("src/script/tapout-up.sh"),
+		"tapout_down": to_root_path("src/script/tapout-down.sh"),
 		"control_port": glob.CONTROL_PORT
 	})
 	res = subprocess.run(vm_cmd, shell=True ,check=True, text=True)
