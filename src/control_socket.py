@@ -15,22 +15,30 @@ class ControlSocket:
 		self.phase = phase
 
 	def initiate(self, backends=[], usernames=[], passwords=[], images=[]):
+		print("Waiting boot.")
 		if not self.wait_confirm(timeout=90):
 			eprint("ControlSocket.initiate: error: VM failed to boot")
 		
+		print("Send phase.")
 		self.send(str(self.phase))
 		
 		if self.phase == 1:
+			print("Send images.")
 			self.send_elems(images)
+			print("Wait confirm.")
 			if self.wait_confirm():
 				# Sending the users to be added to the images
 				# This will allow cowrie to connect (and will
 				# allow brut force from a node to another)
+				print("Send usernames.")
 				self.send_elems(usernames)
+				print("Send passwords.")
 				self.send_elems(passwords)
+				print("Send backends.")
 				self.send_elems(backends)
 			else:
 				eprint("ControlSocket.initiate: error: failed to download WalT images on the VM")
+			print("Receive IPs.")
 			return self.recv_elems() # Returning backends IPs
 		return None
 
