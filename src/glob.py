@@ -8,7 +8,7 @@ def init():
 	global WG_UDP_PORT
 
 	# IP
-	global VM_IP
+	global VM_IP, CONTROL_IP
 
 	# Keys
 	global VM_PRIV_KEY, VM_PUB_KEY, DOOR_PRIV_KEY, DOOR_PUB_KEY
@@ -28,6 +28,7 @@ def init():
 	WG_TCP_PORT=51819
 
 	VM_IP = "10.0.0.2"
+	CONTROL_IP = "127.0.0.1"
 
 	VM_PRIV_KEY=to_root_path("var/key/id_olim")
 	VM_PUB_KEY=to_root_path("var/key/id_olim.pub")

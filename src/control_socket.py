@@ -1,26 +1,25 @@
-import socket
-import threading
-import os
-import sys
+import os, socket, sys, threading
 
+import glob
 from utils import *
 
 # TODO: check how to use untrusted/unsafe strings
 #		(when checking the values returned by the
 #		VM)
 
-ADDR = "127.0.0.1"
-PORT = 5555
-
 class ControlSocket:
 	def __init__(self, phase):
 		self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		self.socket.connect()
-		self.sock = self.socket.makefile(mode="rw")
+		#self.socket.connect()
+		self.socket.bind((glob.CONTROL_IP, glob.CONTROL_PORT))
 		self.phase = phase
 
 	def initiate(self, backends=[], usernames=[], passwords=[], images=[]):
-		if not self.wait("boot"):
+		self.socket.listen(1)
+		self.conn_sock, self.conn_addr = self.socket.accept()
+		self.sock = self.conn_sock.makefile(mode="rw")
+
+		if not self.wait_confirm():
 			eprint("ControlSocket.initiate: error: VM failed to boot")
 		self.sock.write(str(phase))
 		if self.phase == 1:
@@ -39,7 +38,7 @@ class ControlSocket:
 
 	def ask_reboot(self, backend):
 		self.sock.write("reboot:"+backend)
-		return self.wait("done")
+		return self.wait_confirm()
 
 	def wait(self, expected_result, timeout=30):
 		ready, _, _ = select.select([self.sock], [], [], timeout)
@@ -48,6 +47,12 @@ class ControlSocket:
 			return res == expected_result
 		else:
 			return None
+
+	def wait_confirm(self, timeout=30):
+		ready, _, _ = select.select([self.conn_sock], [], [], timeout)
+		if len(ready)>0:
+			return self.conn_sock.recv(1) == b"1"
+		return False
 
 	def send_elems(self, elems):
 		str_elems = ""
@@ -60,6 +65,5 @@ class ControlSocket:
 		return elems.split(sep)
 
 	def close(self):
-		self.sock.close()
-		if self.socket is not None:
-			self.socket.close()
+		self.conn_sock.close()
+		self.socket.close()
