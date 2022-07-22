@@ -44,7 +44,7 @@ class ControlSocket:
 			res = self.socket.recv(2)
 			if len(res)<=0:
 				return False
-			return res[0] == b"\x01"
+			return res[0] == 1
 		return False
 
 	def send(self, string):
@@ -61,6 +61,8 @@ class ControlSocket:
 
 	def recv_elems(self, sep=" "):
 		elems = self.recv()
+		if elems.strip()=="":
+			return []
 		return elems.split(sep)
 
 	def close(self):
