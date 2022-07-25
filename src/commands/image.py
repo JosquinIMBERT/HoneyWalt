@@ -19,6 +19,11 @@ def image_add(options):
 	username = None if options.user is None else options.user[0]
 	password = None if options.password is None else options.password[0]
 
+	# TODO: at some point, we need a cloneable image link for walt
+	#regex = re.compile("(walt|docker|hub):[a-z0-9\-]+/[a-z0-9\-]+(:[a-z0-9\-]+)?")
+	#if not regex.match(name):
+    #    eprint("image add: error: "+name+" is not an image clonable link")
+
 	conf = glob.CONFIG
 
 	if find(conf["image"], name, "name") is not None:

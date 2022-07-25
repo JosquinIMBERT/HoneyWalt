@@ -72,7 +72,6 @@ def honeywalt_commit(options, force=False):
 		cowrie.gen_configurations()
 
 	vm.start(1)
-	time.sleep(3)
 	glob.VM_SOCK = ControlSocket(1)
 	img_name = []
 	img_user = []
