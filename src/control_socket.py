@@ -12,8 +12,8 @@ def to_bytes(string):
 	b.extend(string.encode())
 	return b
 
-def to_string(bytes):
-	return bytes.decode('ascii')
+def to_string(bytes_obj):
+	return bytes_obj.decode('ascii')
 
 class ControlSocket:
 	def __init__(self, phase):
@@ -24,8 +24,6 @@ class ControlSocket:
 		self.phase = phase
 
 	def initiate(self, backends=[], usernames=[], passwords=[], images=[]):
-		print("Waiting boot.")
-
 		try:
 			self.conn, addr = self.socket.accept()
 		except socket.timeout:
@@ -33,30 +31,25 @@ class ControlSocket:
 		except:
 			eprint("ControlSocket.initiate: error: unknown error occured when waiting for the VM")
 		else:
-			print("Send phase.")
 			self.send(str(self.phase))
 			self.wait_confirm()
 			
 			if self.phase == 1:
-				print("Send images.")
 				self.send_elems(images)
-				print("Wait confirm.")
 				if self.wait_confirm():
 					# Sending the users to be added to the images
 					# This will allow cowrie to connect (and will
 					# allow brut force from a node to another)
-					print("Send usernames.")
 					self.send_elems(usernames)
 					self.wait_confirm()
-					print("Send passwords.")
+
 					self.send_elems(passwords)
 					self.wait_confirm()
-					print("Send backends.")
+					
 					self.send_elems(backends)
 					self.wait_confirm()
 				else:
 					eprint("ControlSocket.initiate: error: failed to download WalT images on the VM")
-				print("Receive IPs.")
 				ips = self.recv_elems()
 				self.send_confirm() 
 				return ips
@@ -88,17 +81,18 @@ class ControlSocket:
 		except:
 			eprint("ControlSocket.recv: error: an unknown error occured")
 		else:
+			if not res:
+				eprint("ControlSocket.recv: error: Connection terminated")
 			return to_string(res)
 
 	def send_elems(self, elems, sep=" "):
 		str_elems = ""
 		for elem in elems:
 			str_elems += str(elem) + sep
-		self.send("["+str_elems+"]")
+		self.send(str_elems)
 
 	def recv_elems(self, sep=" "):
-		elems = str(self.recv()).strip()
-		elems = elems[1:len(elems)-1].strip()
+		elems = self.recv().strip()
 		if not elems:
 			return []
 		return elems.split(sep)
