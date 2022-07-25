@@ -16,8 +16,7 @@ def start(phase):
 		"swapfile": "/persist/swap.dd",
 		"wimgfile": "/persist/wimg.dd",
 		"tapout_up": to_root_path("src/script/tapout-up.sh"),
-		"tapout_down": to_root_path("src/script/tapout-down.sh"),
-		"control_port": glob.CONTROL_PORT
+		"tapout_down": to_root_path("src/script/tapout-down.sh")
 	})
 	res = subprocess.run(vm_cmd, shell=True ,check=True, text=True)
 	if res.returncode != 0:
