@@ -19,7 +19,8 @@ class ControlSocket:
 	def __init__(self, phase):
 		self.socket = socket.socket(socket.AF_VSOCK, socket.SOCK_STREAM)
 		self.socket.bind((socket.VMADDR_CID_HOST, glob.CONTROL_PORT))
-		self.socket.settimeout(90) # Timeout for VM connection is 1m30s
+		self.socket.settimeout(240) # Timeout for VM connection is 4min
+		# (We wait both for the VM to boot and for WalT to start)
 		self.socket.listen(1)
 		self.phase = phase
 
