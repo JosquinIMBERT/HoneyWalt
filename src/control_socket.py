@@ -7,6 +7,14 @@ from utils import *
 #		(when checking the values returned by the
 #		VM)
 
+def to_bytes(string):
+	b = bytearray()
+	b.extend(string.encode())
+	return b
+
+def to_string(bytes):
+	return bytes.decode('ascii')
+
 class ControlSocket:
 	def __init__(self, phase):
 		self.socket = socket.socket(socket.AF_VSOCK, socket.SOCK_STREAM)
@@ -57,9 +65,10 @@ class ControlSocket:
 		return res[0] == "1"
 
 	def send(self, string):
-		self.socket.send(string+"\n")
+		self.socket.send(to_bytes(string+"\n"))
 
-	def recv(self, max_iter=30):
+	def recv(self, timeout=30):
+		self.socket.settimeout(timeout)
 		try:
 			res = self.socket.recv(2048)
 		except socket.timeout:
@@ -67,7 +76,7 @@ class ControlSocket:
 		except:
 			eprint("ControlSocket.recv: error: an unknown error occured")
 		else:
-			return res
+			return to_string(res)
 
 	def send_elems(self, elems, sep=" "):
 		str_elems = ""
