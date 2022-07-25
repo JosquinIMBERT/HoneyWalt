@@ -27,7 +27,7 @@ class ControlSocket:
 		print("Waiting boot.")
 
 		try:
-			conn, addr = self.socket.accept()
+			self.conn, addr = self.socket.accept()
 		except socket.timeout:
 			eprint("ControlSocket.initiate: error: it seems like the VM failed to boot.")
 		except:
@@ -65,12 +65,12 @@ class ControlSocket:
 		return res[0] == "1"
 
 	def send(self, string):
-		self.socket.send(to_bytes(string+"\n"))
+		self.conn.send(to_bytes(string+"\n"))
 
 	def recv(self, timeout=30):
-		self.socket.settimeout(timeout)
+		self.conn.settimeout(timeout)
 		try:
-			res = self.socket.recv(2048)
+			res = self.conn.recv(2048)
 		except socket.timeout:
 			eprint("ControlSocket.recv: error: reached timeout")
 		except:
@@ -82,15 +82,18 @@ class ControlSocket:
 		str_elems = ""
 		for elem in elems:
 			str_elems += str(elem) + sep
-		self.send(str_elems)
+		self.send("["+str_elems+"]")
 
 	def recv_elems(self, sep=" "):
-		elems = self.recv()
-		if elems.strip()=="":
+		elems = self.recv().strip()
+		elems = elems[1:len(elems)-1].strip()
+		if not elems:
 			return []
 		return elems.split(sep)
 
 	def close(self):
+		if conn is not None:
+			self.conn.close()
 		self.socket.close()
 
 
