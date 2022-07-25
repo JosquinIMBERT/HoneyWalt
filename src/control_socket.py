@@ -35,6 +35,7 @@ class ControlSocket:
 		else:
 			print("Send phase.")
 			self.send(str(self.phase))
+			self.wait_confirm()
 			
 			if self.phase == 1:
 				print("Send images.")
@@ -46,15 +47,26 @@ class ControlSocket:
 					# allow brut force from a node to another)
 					print("Send usernames.")
 					self.send_elems(usernames)
+					self.wait_confirm()
 					print("Send passwords.")
 					self.send_elems(passwords)
+					self.wait_confirm()
 					print("Send backends.")
 					self.send_elems(backends)
+					self.wait_confirm()
 				else:
 					eprint("ControlSocket.initiate: error: failed to download WalT images on the VM")
 				print("Receive IPs.")
-				return self.recv_elems() # Returning backends IPs
+				ips = self.recv_elems()
+				self.send_confirm() 
+				return ips
 			return None
+
+	def send_confirm(self):
+		self.send("1")
+
+	def send_fail(self):
+		self.send("0")
 
 	def ask_reboot(self, backend):
 		self.send("reboot:"+backend)
@@ -85,7 +97,7 @@ class ControlSocket:
 		self.send("["+str_elems+"]")
 
 	def recv_elems(self, sep=" "):
-		elems = self.recv().strip()
+		elems = str(self.recv()).strip()
 		elems = elems[1:len(elems)-1].strip()
 		if not elems:
 			return []
