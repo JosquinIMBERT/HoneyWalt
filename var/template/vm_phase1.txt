@@ -11,7 +11,5 @@ qemu-system-x86_64 \
 	-device e1000,netdev=waltout \
 	-netdev bridge,id=waltnet,br=walt-net \
 	-device virtio-net,netdev=waltnet \
-	-device virtio-serial \
-	-chardev socket,id=control,host=127.0.0.1,port=${control_port},server,nowait \
-	-device virtserialport,chardev=control,name=control \
+	-device vhost-vsock-pci,guest-cid=3 \
 	-vnc none &
