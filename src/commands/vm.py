@@ -19,7 +19,7 @@ def vm_shell(options):
 def vm_start(options):
 	if vm.state():
 		eprint("vm start: error: the VM is already running")
-	phase = options.phase
+	phase = options.phase[0]
 	vm.start(phase)
 
 def vm_stop(options):
