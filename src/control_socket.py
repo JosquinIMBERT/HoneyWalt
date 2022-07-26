@@ -1,4 +1,4 @@
-import os, select, socket, sys, threading
+import os, select, socket, sys, threading, time
 
 import glob
 from utils import *
@@ -18,7 +18,14 @@ def to_string(bytes_obj):
 class ControlSocket:
 	def __init__(self, phase):
 		self.socket = socket.socket(socket.AF_VSOCK, socket.SOCK_STREAM)
-		self.socket.bind((socket.VMADDR_CID_HOST, glob.CONTROL_PORT))
+		while True:
+			try:
+				self.socket.bind((socket.VMADDR_CID_HOST, glob.CONTROL_PORT))
+			except:
+				time.sleep(1)
+			else:
+				break
+		
 		self.socket.settimeout(240) # Timeout for VM connection is 4min
 		# (We wait both for the VM to boot and for WalT to start)
 		self.socket.listen(1)

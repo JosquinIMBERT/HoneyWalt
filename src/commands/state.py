@@ -92,8 +92,8 @@ def honeywalt_commit(options, force=False):
 	
 	# Generate and distribute wireguard configurations
 	if regen:
-		serv_privkeys, serv_pubkeys, cli_privkeys, cli_pubkeys = wireguard.gen_keys()
-		wireguard.gen_configurations(
+		serv_privkeys, serv_pubkeys, cli_privkeys, cli_pubkeys = wg.gen_keys()
+		wg.gen_configurations(
 			serv_privkeys,
 			serv_pubkeys,
 			cli_privkeys,
