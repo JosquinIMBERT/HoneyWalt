@@ -14,7 +14,7 @@ def honeywalt_vm(options):
 
 def vm_shell(options):
 	if vm.state() and vm.phase()==1:
-		run("ssh root@10.0.0.2 -i "+glob.VM_PRIV_KEY)
+		run("ssh root@10.0.0.2 -i "+glob.VM_PRIV_KEY, "vm shell: error: failed to connect to the vm")
 
 def vm_start(options):
 	if vm.state():
