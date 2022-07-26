@@ -89,8 +89,8 @@ def print_object_array(objects, fields):
 		print(line)
 
 
-def run(command, error, output=False):
-	res = subprocess.run(command, shell=True ,check=True, text=True, capture_output=output)
+def run(command, error, output=False, timeout=None):
+	res = subprocess.run(command, shell=True ,check=True, text=True, capture_output=output, timeout=timeout)
 	if res.returncode != 0:
 		eprint(error)
 	if output:
@@ -112,7 +112,7 @@ def door_run(door, cmd, err="", output=False):
 	return run(ssh_cmd, error=err, output=output)
 
 
-def vm_run(cmd, err="", output=False):
+def vm_run(cmd, err="", output=False, timeout=None):
 	ssh_temp = Template("ssh root@${ip} -i ${keypath} -p ${port} \"${command}\"")
 
 	ssh_cmd = ssh_temp.substitute({
@@ -122,7 +122,7 @@ def vm_run(cmd, err="", output=False):
 		"command": cmd
 	})
 
-	return run(ssh_cmd, error=err, output=output)
+	return run(ssh_cmd, error=err, output=output, timeout=timeout)
 
 
 # get the path to a file in the application
