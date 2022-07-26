@@ -6,13 +6,20 @@ import glob
 
 # Print an error and exit
 def eprint(*args, exit=True, **kwargs):
-    print(*args, file=sys.stderr, **kwargs)
+    log(glob.ERROR, *args, **kwargs)
     if exit:
     	sys.exit(1)
 
 # Print a warning
 def wprint(*args, **kwargs):
-    print(*args, file=sys.stderr, **kwargs)
+    log(glob.WARNING, *args, **kwargs)
+
+def log(level, *args, **kwargs):
+	if level <= glob.LOG_LEVEL:
+		if level <= glob.WARNING: # ERROR and WARNING
+			print(*args, file=sys.stderr, **kwargs)
+		else: # INFO
+			print(*args, **kwargs)
 
 # Find an object in the "objects" list with field "field" equal "target"
 def find(objects, target, field):

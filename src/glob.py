@@ -1,4 +1,4 @@
-from utils import *
+import sys
 
 def init(conf, vm_priv, vm_pub, door_priv, door_pub):
 	# Ports
@@ -17,6 +17,9 @@ def init(conf, vm_priv, vm_pub, door_priv, door_pub):
 
 	# Config
 	global CONFIG
+
+	# Miscellaneous
+	global LOG_LEVEL, INFO, WARNING, ERROR
 	
 	LISTEN_PORTS=2000
 	BACKEND_PORTS=3000
@@ -37,3 +40,21 @@ def init(conf, vm_priv, vm_pub, door_priv, door_pub):
 	VM_SOCK = None
 
 	CONFIG = conf
+
+	LOG_LEVEL = 0
+	INFO = 2
+	WARNING = 1
+	ERROR = 0
+
+def set_log_level(log_level):
+	global LOG_LEVEL
+
+	if log_level=="ERROR":
+		LOG_LEVEL = ERROR
+	elif log_level=="WARNING":
+		LOG_LEVEL = WARNING
+	elif log_level=="INFO":
+		LOG_LEVEL = INFO
+	else:
+		print("honeywalt: invalid log level")
+		sys.exit(1)

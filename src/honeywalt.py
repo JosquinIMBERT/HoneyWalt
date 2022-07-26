@@ -42,6 +42,8 @@ def main():
 	status_subparser= subparsers.add_parser("status", help="HoneyWalt status")
 	help_subparser= subparsers.add_parser("help", help="Print help")
 
+	parser.add_argument("-l", "--log-level", nargs=1, help="Set log level (INFO, WARNING, ERROR)")
+
 
 	#############
 	#   DOORS   #
@@ -175,6 +177,9 @@ def main():
 	#   START   #
 	#############
 	options = parser.parse_args()
+	if options.log_level is not None:
+		log_level = options.log_level[0]
+		glob.set_log_level(log_level)
 	if options.cmd == "door":
 		honeywalt_door(options)
 	elif options.cmd == "controller":
