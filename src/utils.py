@@ -1,7 +1,8 @@
 import os, signal, sys, subprocess
 from os.path import abspath, dirname, exists, join
+from string import Template
 
-# TO BE TESTED: kill_from_file
+import glob
 
 # Print an error and exit
 def eprint(*args, exit=True, **kwargs):

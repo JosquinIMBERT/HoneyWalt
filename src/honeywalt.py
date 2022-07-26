@@ -5,6 +5,7 @@ from commands.controller import honeywalt_controller
 from commands.device import honeywalt_device
 from commands.image import honeywalt_image
 from commands.state import *
+from config import get_conf
 import glob
 from utils import *
 
@@ -14,7 +15,7 @@ def honeywalt_help():
 
 
 def main():
-	glob.init()
+	glob.init(get_conf())
 	
 	##############
 	#   GLOBAL   #

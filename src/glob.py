@@ -1,7 +1,6 @@
-from config import get_conf
 from utils import *
 
-def init():
+def init(conf):
 	# Ports
 	global LISTEN_PORTS, BACKEND_PORTS, SOCKET_PORTS
 	global CONTROL_PORT, WIREGUARD_PORTS, WG_TCP_PORT
@@ -37,4 +36,4 @@ def init():
 
 	VM_SOCK = None
 
-	CONFIG = get_conf()
+	CONFIG = conf
