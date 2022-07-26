@@ -115,7 +115,7 @@ def gen_configurations(serv_privkeys, serv_pubkeys, cli_privkeys, cli_pubkeys):
 			"port":22
 		})
 		error_msg = "wireguard.gen_configurations: error: scp command returned non-zero code"
-		run(scp_cmd, error_msg, output=True) # We wait for output to be synchronous
+		run(scp_cmd, error_msg)
 		i+=1
 
 

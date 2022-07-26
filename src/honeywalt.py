@@ -2,6 +2,7 @@ import argparse
 
 from commands.door import honeywalt_door
 from commands.controller import honeywalt_controller
+from commands.vm import honeywalt_vm
 from commands.device import honeywalt_device
 from commands.image import honeywalt_image
 from commands.state import *
@@ -31,6 +32,7 @@ def main():
 
 	door_subparser= subparsers.add_parser("door", help="Manage the doors (public servers)")
 	ctrl_subparser= subparsers.add_parser("controller", help="Manage the controller (control and monitor traffic)")
+	vm_subparser = subparsers.add_parser("vm", help="Manage the vm (WalT server)")
 	dev_subparser = subparsers.add_parser("device", help="Manage the devices (exposed machines)")
 	img_subparser = subparsers.add_parser("image", help="Manage the images (used on the devices)")
 	start_subparser= subparsers.add_parser("start", help="Start HoneyWalt")
@@ -83,6 +85,25 @@ def main():
 
 	# Controller help
 	ctrl_help_sp= ctrl_subparsers.add_parser("help", help="Print help")
+
+
+	##############
+	#     VM     #
+	##############
+	vm_subparsers= vm_subparser.add_subparsers(dest="vm_cmd", required=True)
+	
+	# VM Shell
+	vm_shell_sp = vm_subparsers.add_parser("shell", help="Open a shell on the VM")
+	
+	# Start VM
+	vm_start_sp= vm_subparsers.add_parser("start", help="Start the VM")
+	vm_start_sp.add_argument("phase", nargs=1, help="VM phase (1:safe & persistent, 2:unsafe & volatile)")
+
+	# Stop VM
+	vm_stop_sp= vm_subparsers.add_parser("stop", help="Stop the VM")
+
+	# VM help
+	vm_help_sp= vm_subparsers.add_parser("help", help="Print help")
 
 
 	##############
@@ -158,6 +179,8 @@ def main():
 		honeywalt_door(options)
 	elif options.cmd == "controller":
 		honeywalt_controller(options)
+	elif options.cmd == "vm":
+		honeywalt_vm(options)
 	elif options.cmd == "device":
 		honeywalt_device(options)
 	elif options.cmd == "image":

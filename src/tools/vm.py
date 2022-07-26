@@ -5,9 +5,9 @@ from string import Template
 import glob
 from utils import *
 
-# TO BE TESTED: start and stop
-
 def start(phase):
+	with open(to_root_path("run/vm.phase"), "w") as file:
+		file.write(str(phase))
 	with open(to_root_path("var/template/vm_phase"+str(phase)+".txt"), "r") as temp_file:
 		template = Template(temp_file.read())
 	vm_cmd = template.substitute({
@@ -26,6 +26,12 @@ def start(phase):
 def state():
 	pidpath = to_root_path("run/vm.pid")
 	return is_pid(pidpath)
+
+
+def phase():
+	with open(to_root_path("run/vm.phase"), "r") as file:
+		phase = file.read()
+	return int(phase)
 
 
 def stop():
