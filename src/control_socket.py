@@ -18,14 +18,17 @@ def to_string(bytes_obj):
 class ControlSocket:
 	def __init__(self, phase):
 		self.socket = socket.socket(socket.AF_VSOCK, socket.SOCK_STREAM)
-		while True:
+		i = 0
+		while i<15:
+			i+=1
 			try:
 				self.socket.bind((socket.VMADDR_CID_HOST, glob.CONTROL_PORT))
 			except:
 				time.sleep(1)
 			else:
 				break
-		
+		if i>=15:
+			eprint("ControlSocket.__init__: error: failed to bind socket, VM probably failed to boot")
 		self.socket.settimeout(240) # Timeout for VM connection is 4min
 		# (We wait both for the VM to boot and for WalT to start)
 		self.socket.listen(1)

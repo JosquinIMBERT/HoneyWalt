@@ -100,7 +100,7 @@ def run(command, error, output=False):
 
 
 def door_run(door, cmd, err="", output=False):
-	ssh_temp = Template("ssh root@${ip} -i {keypath} -p {port} \"${command}\"")
+	ssh_temp = Template("ssh root@${ip} -i ${keypath} -p ${port} \"${command}\"")
 
 	ssh_cmd = ssh_temp.substitute({
 		"ip": door["host"],
@@ -113,7 +113,7 @@ def door_run(door, cmd, err="", output=False):
 
 
 def vm_run(cmd, err="", output=False):
-	ssh_temp = Template("ssh root@${ip} -i {keypath} -p {port} \"${command}\"")
+	ssh_temp = Template("ssh root@${ip} -i ${keypath} -p ${port} \"${command}\"")
 
 	ssh_cmd = ssh_temp.substitute({
 		"ip": glob.VM_IP,

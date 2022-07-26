@@ -45,16 +45,14 @@ def del_configurations():
 	delete(path, suffix=".conf")
 	# VM
 	error_msg = "wireguard:del_configurations: error: failed to delete vm configurations"
-	vm_run("rm /etc/wireguard/*")
+	vm_run("rm -f /etc/wireguard/*", err=error_msg)
 
 
 def gen_configurations(serv_privkeys, serv_pubkeys, cli_privkeys, cli_pubkeys):
 	del_configurations()
 	# General variables
 	conf_path = to_root_path("run/wireguard/")
-	scp_temp = Template("scp "+conf_path+"${file} \
-		root@${addr}:${remote_path} \
-		-i ${key} -p ${port}")
+	scp_temp = Template("scp -i ${key} -P ${port} "+conf_path+"${file} root@${addr}:${remote_path}")
 
 	# Server Configuration Templates
 	with open(to_root_path("var/template/wg_server_itf.txt"), "r") as temp_file:
@@ -70,7 +68,7 @@ def gen_configurations(serv_privkeys, serv_pubkeys, cli_privkeys, cli_pubkeys):
 			"server_privkey": serv_privkeys[i]
 		})
 		for cli_pubkey in cli_pubkeys:
-			server_config += server_peer_temp.substitute({
+			server_config += "\n\n" + server_peer_temp.substitute({
 				"vm_pubkey": cli_pubkey
 			})
 		# Write configuration to a file
@@ -117,7 +115,7 @@ def gen_configurations(serv_privkeys, serv_pubkeys, cli_privkeys, cli_pubkeys):
 			"port":22
 		})
 		error_msg = "wireguard.gen_configurations: error: scp command returned non-zero code"
-		run(scp_cmd, error_msg)
+		run(scp_cmd, error_msg, output=True) # We wait for output to be synchronous
 		i+=1
 
 
