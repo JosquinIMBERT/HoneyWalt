@@ -1,3 +1,5 @@
+import time
+
 import tools.vm as vm
 from utils import *
 import glob
@@ -14,7 +16,19 @@ def honeywalt_vm(options):
 
 def vm_shell(options):
 	if vm.state() and vm.phase()==1:
-		run("ssh root@10.0.0.2 -i "+glob.VM_PRIV_KEY, "vm shell: error: failed to connect to the vm")
+		i=0
+		while i<24:
+			i+=1
+			try:
+				run("ssh root@10.0.0.2 -i "+glob.VM_PRIV_KEY+" 2>/dev/null", "")
+			except:
+				if i==1:
+					print("Waiting for the VM to boot...")
+				time.sleep(5)
+			else:
+				break
+		if i>=24:
+			eprint("vm shell: error: failed to connect to the vm")
 
 def vm_start(options):
 	if vm.state():
