@@ -15,7 +15,13 @@ def honeywalt_help():
 
 
 def main():
-	glob.init(get_conf())
+	glob.init(
+		get_conf(),
+		to_root_path("var/key/id_olim"),
+		to_root_path("var/key/id_olim.pub"),
+		to_root_path("var/key/id_door"),
+		to_root_path("var/key/id_door.pub")
+	)
 	
 	##############
 	#   GLOBAL   #

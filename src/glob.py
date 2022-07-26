@@ -1,6 +1,6 @@
 from utils import *
 
-def init(conf):
+def init(conf, vm_priv, vm_pub, door_priv, door_pub):
 	# Ports
 	global LISTEN_PORTS, BACKEND_PORTS, SOCKET_PORTS
 	global CONTROL_PORT, WIREGUARD_PORTS, WG_TCP_PORT
@@ -29,10 +29,10 @@ def init(conf):
 	VM_IP = "10.0.0.2"
 	CONTROL_IP = "127.0.0.1"
 
-	VM_PRIV_KEY=to_root_path("var/key/id_olim")
-	VM_PUB_KEY=to_root_path("var/key/id_olim.pub")
-	DOOR_PRIV_KEY=to_root_path("var/key/id_door")
-	DOOR_PUB_KEY=to_root_path("var/key/id_door.pub")
+	VM_PRIV_KEY=vm_priv
+	VM_PUB_KEY=vm_pub
+	DOOR_PRIV_KEY=door_priv
+	DOOR_PUB_KEY=door_pub
 
 	VM_SOCK = None
 
