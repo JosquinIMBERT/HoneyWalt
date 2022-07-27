@@ -113,8 +113,9 @@ def run(command, error, output=False, timeout=None):
 		return None
 
 
-def door_run(door, cmd, err="", output=False):
-	ssh_temp = Template("ssh root@${ip} -i ${keypath} -p ${port} \"${command}\"")
+def door_run(door, cmd, err="", output=False, background=False):
+	back = " &" if background else ""
+	ssh_temp = Template("ssh root@${ip} -i ${keypath} -p ${port} \"${command}\""+back)
 
 	ssh_cmd = ssh_temp.substitute({
 		"ip": door["host"],

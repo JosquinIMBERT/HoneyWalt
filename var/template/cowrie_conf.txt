@@ -18,7 +18,7 @@ enabled = true
 logfile = $logfile
 epoch_timestamp = false
 
-[output_socketlog]
-enabled = true
-address = 127.0.0.1:$socket_port
-timeout = 5
+#[output_socketlog]
+#enabled = true
+#address = 127.0.0.1:$socket_port
+#timeout = 5

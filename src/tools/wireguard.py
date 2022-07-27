@@ -147,7 +147,10 @@ def start_tcp_tunnels():
 	door_args = udp_ip+" "+str(udp_port)+" "+tcp_host+" "+str(tcp_port)
 	door_cmd = "python3 /root/wg_tcp_adapter.py /root/tunnel.pid door "+door_args+" &"
 	for door in glob.CONFIG["door"]:
-		door_run(door, door_cmd)
+		# https://stackoverflow.com/questions/18569588/ssh-remote-command-does-not-return
+		# It seems like the only way to run the program in background is to also keep the ssh connection locally in background
+		# Anyway the local process will be killed when the remote process will be killed
+		door_run(door, door_cmd, background=True)
 
 	i=0
 	for dev in glob.CONFIG["device"]:
