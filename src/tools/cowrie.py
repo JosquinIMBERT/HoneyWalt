@@ -68,8 +68,8 @@ def start_tunnels_to_dmz():
 def start():
 	conf = glob.CONFIG
 	i=0
-	template = Template("export COWRIE_CONFIG_PATH=${conf_path}; \
-		/home/cowrie/cowrie/bin/cowrie start --pidfile=${pid_path}")
+	with open(to_root_path("var/template/start_cowrie.txt"), "r") as file:
+		template = Template(file.read())
 	for dev in conf["device"]:
 		cmd = template.substitute({
 			"conf_path": to_root_path("run/cowrie/conf/"+str(i)+".conf"),
