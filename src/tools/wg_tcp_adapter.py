@@ -1,4 +1,4 @@
-import argparse, os, select, socket, sys, threading
+import argparse, os, select, socket, sys, threading, time
 
 
 def encode_len(bytes_obj):
@@ -20,7 +20,19 @@ def controller_tunnel(
 	with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as udp_sock:
 		udp_sock.bind((udp_lo_host, udp_lo_port))
 		with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as tcp_sock:
-			tcp_sock.connect((tcp_host, tcp_port))
+			i=0
+			while i<6: # ~30sec
+				try:
+					tcp_sock.connect((tcp_host, tcp_port))
+				except:
+					time.sleep(5)
+				else:
+					break
+				i+=1
+			if i>=6:
+				print("[ERROR] wg_tcp_adapter.controller_tunnel: failed to connect to the door")
+				sys.exit(1)
+
 			sel_list = [udp_sock, tcp_sock]
 			try:
 				while True:
