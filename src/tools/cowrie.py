@@ -119,7 +119,8 @@ def stop_tunnels(tunnel_type):
 def stop():
 	path = to_root_path("run/cowrie/pid")
 	for pidpath in os.listdir(path):
-		kill_from_file(os.path.join(path, pidpath))
+		if pidpath.endswith(".pid"):
+			kill_from_file(os.path.join(path, pidpath))
 
 
 def state():
