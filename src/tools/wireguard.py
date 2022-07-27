@@ -156,10 +156,10 @@ def start_tcp_tunnels():
 		tcp_host=find(glob.CONFIG["door"], dev["node"], "dev")["host"]
 		tcp_port=glob.WG_TCP_PORT
 		local_args = udp_lo_host+" "+str(udp_lo_port)+" "+tcp_host+" "+str(tcp_port)
-		local_cmd = "python3 .../wg_tcp_adapter.py controller "+local_args
-		proc = subprocess.Popen(local_cmd, creationflags=DETACHED_PROCESS)
-		with open(to_root_path("run/wg_tcp_adapter/tunnel"+str(i)+".pid"), "w") as pidfile:
-			pidfile.write(str(proc.pid))
+		prog = to_root_path("src/tools/wg_tcp_adapter.py")
+		pid_file = to_root_path("run/wg_tcp_adapter/tunnel"+str(i)+".pid")
+		local_cmd = "python3 "+prog+" controller "+local_args+" & echo $!>"+pid_file
+		run(local_cmd)
 		i+=1
 
 
