@@ -1,6 +1,5 @@
 [honeypot]
 backend = proxy
-log_path = $log_path
 download_path = $download_path
 auth_class = UserDB
 

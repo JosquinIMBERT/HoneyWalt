@@ -149,6 +149,7 @@ def start_tcp_tunnels():
 	for door in glob.CONFIG["door"]:
 		door_run(door, door_cmd)
 
+	i=0
 	for dev in glob.CONFIG["device"]:
 		udp_lo_host="0.0.0.0",
 		udp_lo_port=glob.WIREGUARD_PORTS+i,
@@ -159,6 +160,7 @@ def start_tcp_tunnels():
 		proc = subprocess.Popen(local_cmd, creationflags=DETACHED_PROCESS)
 		with open(to_root_path("run/wg_tcp_adapter/tunnel"+str(i)+".pid"), "w") as pidfile:
 			pidfile.write(str(proc.pid))
+		i+=1
 
 
 def stop_tunnels():

@@ -28,7 +28,6 @@ def gen_configurations():
 		if not exists(download_path):
 			os.mkdir(download_path)
 		params = {
-			'log_path' : to_root_path("run/cowrie/log/"+str_i+".log"),
 			'download_path' : download_path,
 			'listen_port' : glob.LISTEN_PORTS+i,
 			'backend_host' : "127.0.0.1",
@@ -73,7 +72,8 @@ def start():
 	for dev in conf["device"]:
 		cmd = template.substitute({
 			"conf_path": to_root_path("run/cowrie/conf/"+str(i)+".conf"),
-			"pid_path": to_root_path("run/cowrie/pid/"+str(i)+".pid")
+			"pid_path": to_root_path("run/cowrie/pid/"+str(i)+".pid"),
+			"log_path": to_root_path("run/cowrie/log/"+str(i)+".log")
 		})
 		error_msg = "cowrie.start: error: failed to start cowrie"
 		run(cmd, error_msg)

@@ -61,6 +61,12 @@ class ControlSocket:
 				ips = self.recv_elems()
 				self.send_confirm() 
 				return ips
+			else:
+				self.send_elems(images)
+				self.wait_confirm()
+
+				self.send_elems(backends)
+				self.wait_confirm() # Confirms backends booted successfully
 			return None
 
 	def send_confirm(self):
