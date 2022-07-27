@@ -53,7 +53,7 @@ def start_tunnels_to_dmz():
 		-i ${key_path}")
 	for dev in conf["device"]:
 		tunnel_cmd = template.substitute({
-			"socket": to_root_path("run/ssh/cowrie-dmz/sock"+str(i)),
+			"socket": to_root_path("run/ssh/cowrie-dmz/"+str(i)+".sock"),
 			"port": glob.BACKEND_PORTS+i,
 			"ip": dev["ip"],
 			"vm_ip": vm_ip,
@@ -91,7 +91,7 @@ def start_tunnels_to_doors():
 	for door in conf["door"]:
 		dev_id = find_id(conf["device"], door["dev"], "node")
 		tunnel_cmd = template.substitute({
-			"socket": to_root_path("run/ssh/cowrie-out/sock"+str(i)),
+			"socket": to_root_path("run/ssh/cowrie-out/"+str(i)+".sock"),
 			"fakessh_port": 22,
 			"exposed_port": glob.LISTEN_PORTS+dev_id,
 			"key_path": glob.DOOR_PRIV_KEY,
@@ -103,11 +103,17 @@ def start_tunnels_to_doors():
 		i+=1
 
 
-def stop_tunnels():
-	for p in ["run/ssh/cowrie-out", "run/ssh/cowrie-dmz"]:
-		path = to_root_path(p)
-		for killpath in os.listdir(path):
-			kill_from_file(os.path.join(path, killpath), type="ssh")
+def stop_tunnels_to_dmz():
+	stop_tunnels("dmz")
+
+def stop_tunnels_to_doors():
+	stop_tunnels("out")
+
+def stop_tunnels(tunnel_type):
+	path = to_root_path("run/ssh/cowrie-"+tunnel_type)
+	for killpath in os.listdir(path):
+		if killpath.endswith(".sock"):
+			kill_from_file(os.path.join(path, killpath), filetype="ssh")
 
 
 def stop():

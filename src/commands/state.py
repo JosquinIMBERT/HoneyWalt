@@ -127,10 +127,12 @@ def honeywalt_commit(options, force=False):
 
 
 def honeywalt_stop(options):
-	log(glob.INFO, "Stop: stopping cowrie tunnels")
-	cowrie.stop_tunnels()
+	log(glob.INFO, "Stop: stopping cowrie tunnels to doors")
+	cowrie.stop_tunnels_to_doors()
 	log(glob.INFO, "Stop: stopping cowrie")
 	cowrie.stop()
+	log(glob.INFO, "Stop: stopping cowrie tunnels to dmz")
+	cowrie.stop_tunnels_to_dmz()
 	log(glob.INFO, "Stop: stopping udp tcp adapter")
 	wg.stop_tcp_tunnels()
 	log(glob.INFO, "Stop: stopping wireguard")
