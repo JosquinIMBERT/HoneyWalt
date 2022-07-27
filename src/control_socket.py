@@ -76,8 +76,8 @@ class ControlSocket:
 
 				log(glob.DEBUG, "ControlSocket: sending backends")
 				self.send_elems(backends)
-				self.wait_confirm(timeout=150) # Confirms backends booted successfully (timeout=2m30)
-				log(glob.DEBUG, "ControlSocket: walt nodes booted successfully")
+				self.wait_confirm()
+				#log(glob.DEBUG, "ControlSocket: walt nodes booted successfully")
 			return None
 
 	def send_confirm(self):

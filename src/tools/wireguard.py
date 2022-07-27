@@ -151,9 +151,9 @@ def start_tcp_tunnels():
 
 	i=0
 	for dev in glob.CONFIG["device"]:
-		udp_lo_host="0.0.0.0",
-		udp_lo_port=glob.WIREGUARD_PORTS+i,
-		tcp_host=find(glob.CONFIG["door"], dev["node"], "dev")["host"],
+		udp_lo_host="0.0.0.0"
+		udp_lo_port=glob.WIREGUARD_PORTS+i
+		tcp_host=find(glob.CONFIG["door"], dev["node"], "dev")["host"]
 		tcp_port=glob.WG_TCP_PORT
 		local_args = udp_lo_host+" "+str(udp_lo_port)+" "+tcp_host+" "+str(tcp_port)
 		local_cmd = "python3 .../wg_tcp_adapter.py controller "+local_args
