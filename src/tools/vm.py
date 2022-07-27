@@ -18,9 +18,7 @@ def start(phase):
 		"tapout_up": to_root_path("src/script/tapout-up.sh"),
 		"tapout_down": to_root_path("src/script/tapout-down.sh")
 	})
-	res = subprocess.run(vm_cmd, shell=True ,check=True, text=True)
-	if res.returncode != 0:
-		eprint("Error: failed to start the VM")
+	run(vm_cmd, "vm.start: failed to start the VM")
 
 
 def state():
