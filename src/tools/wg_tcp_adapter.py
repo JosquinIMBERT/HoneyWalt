@@ -105,14 +105,14 @@ if __name__ == '__main__':
 	if(options.cmd == "door"):
 		door_tunnel(
 			options.udp_host[0],
-			options.udp_port[0],
+			int(options.udp_port[0]),
 			options.tcp_host[0],
-			options.tcp_port[0]
+			int(options.tcp_port[0])
 		)
 	else:
 		controller_tunnel(
 			options.udp_lo_host[0],
-			options.udp_lo_port[0],
+			int(options.udp_lo_port[0]),
 			options.tcp_host[0],
-			options.tcp_port[0]
+			int(options.tcp_port[0])
 		)
