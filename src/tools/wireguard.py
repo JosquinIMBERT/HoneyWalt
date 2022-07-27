@@ -172,7 +172,7 @@ def stop_tunnels():
 
 def stop_tcp_tunnels():
 	for door in glob.CONFIG["door"]:
-		door_run(door, "kill $(cat /root/tunnel.pid)")
+		door_run(door, "kill \$(cat /root/tunnel.pid)")
 	path = to_root_path("run/wg_tcp_adapter")
 	for pidpath in os.listdir(path):
 		kill_from_file(os.path.join(path, pidpath))
