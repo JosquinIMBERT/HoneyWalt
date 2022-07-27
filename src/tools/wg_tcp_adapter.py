@@ -1,4 +1,4 @@
-import argparse, select, socket, sys, threading
+import argparse, os, select, socket, sys, threading
 
 
 def encode_len(bytes_obj):
@@ -86,6 +86,7 @@ def door_tunnel(
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Transform UDP into TCP')
+	parser.add_argument("pid_file", nargs=1, help="Path to the PID file")
 	subparsers = parser.add_subparsers(dest="cmd", required=True)
 
 	door_subparser = subparsers.add_parser("door")
@@ -102,6 +103,10 @@ if __name__ == '__main__':
 	ctrl_subparser.add_argument("tcp_port", nargs=1, help="TCP port to connect to")
 
 	options = parser.parse_args()
+	# Write PID
+	with open(options.pid_file[0], "w") as pid_file:
+		pid_file.write(str(os.getpid()))
+	# Run adapter
 	if(options.cmd == "door"):
 		door_tunnel(
 			options.udp_host[0],

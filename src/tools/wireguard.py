@@ -145,7 +145,7 @@ def start_tcp_tunnels():
 	tcp_host = "0.0.0.0"
 	tcp_port = glob.WG_TCP_PORT
 	door_args = udp_ip+" "+str(udp_port)+" "+tcp_host+" "+str(tcp_port)
-	door_cmd = "python3 /root/wg_tcp_adapter.py door "+door_args+" & echo $!>/root/tunnel.pid"
+	door_cmd = "python3 /root/wg_tcp_adapter.py /root/tunnel.pid door "+door_args+" &"
 	for door in glob.CONFIG["door"]:
 		door_run(door, door_cmd)
 
@@ -158,7 +158,7 @@ def start_tcp_tunnels():
 		local_args = udp_lo_host+" "+str(udp_lo_port)+" "+tcp_host+" "+str(tcp_port)
 		prog = to_root_path("src/tools/wg_tcp_adapter.py")
 		pid_file = to_root_path("run/wg_tcp_adapter/tunnel"+str(i)+".pid")
-		local_cmd = "python3 "+prog+" controller "+local_args+" & echo $!>"+pid_file
+		local_cmd = "python3 "+prog+" "+pid_file+" controller "+local_args+" &"
 		run(local_cmd, "failed to start udp/tcp adapter")
 		i+=1
 
