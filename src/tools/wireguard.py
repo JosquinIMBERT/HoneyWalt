@@ -20,7 +20,7 @@ def gen_keys():
 	serv_privkeys = []
 	serv_pubkeys = []
 	for door in glob.CONFIG["door"]:
-		error_msg = "wireguard.gen_keys: error: ssh command returned non-zero code"
+		error_msg = "wireguard.gen_keys: ssh command returned non-zero code"
 		res = door_run(door, keygen_cmd, err=error_msg, output=True)
 		privkey, pubkey = res.split("\n", 1)
 		serv_privkeys += [ privkey ]
@@ -30,7 +30,7 @@ def gen_keys():
 	cli_privkeys = []
 	cli_pubkeys = []
 	for dev in glob.CONFIG["device"]:
-		error_msg = "wireguard.gen_keys: error: ssh command returned non-zero code"
+		error_msg = "wireguard.gen_keys: ssh command returned non-zero code"
 		res = vm_run(keygen_cmd, err=error_msg, output=True)
 		privkey, pubkey = res.split("\n", 1)
 		cli_privkeys += [ privkey ]
@@ -44,7 +44,7 @@ def del_configurations():
 	path = to_root_path("run/wireguard")
 	delete(path, suffix=".conf")
 	# VM
-	error_msg = "wireguard:del_configurations: error: failed to delete vm configurations"
+	error_msg = "wireguard:del_configurations: failed to delete vm configurations"
 	vm_run("rm -f /etc/wireguard/*", err=error_msg)
 
 
@@ -82,7 +82,7 @@ def gen_configurations(serv_privkeys, serv_pubkeys, cli_privkeys, cli_pubkeys):
 			"key":glob.DOOR_PRIV_KEY,
 			"port":door["realssh"]
 		})
-		error_msg = "wireguard.gen_configurations: error: scp command returned non-zero code"
+		error_msg = "wireguard.gen_configurations: scp command returned non-zero code"
 		run(scp_cmd, error_msg)
 		i+=1
 
@@ -114,7 +114,7 @@ def gen_configurations(serv_privkeys, serv_pubkeys, cli_privkeys, cli_pubkeys):
 			"key":glob.VM_PRIV_KEY,
 			"port":22
 		})
-		error_msg = "wireguard.gen_configurations: error: scp command returned non-zero code"
+		error_msg = "wireguard.gen_configurations: scp command returned non-zero code"
 		run(scp_cmd, error_msg)
 		i+=1
 
@@ -124,13 +124,13 @@ def tunnels(state="up"):
 
 	wg_cmd = "wg-quick "+state+" /etc/wireguard/wg.conf"
 	for door in glob.CONFIG["door"]:
-		error_msg = "wireguard.gen_configurations: error: ssh command returned non-zero code"
+		error_msg = "wireguard.gen_configurations: ssh command returned non-zero code"
 		door_run(door, wg_cmd, err=error_msg)
 
 	i=0
 	for dev in glob.CONFIG["device"]:
 		wg_cmd = "wg-quick "+state+" /etc/wireguard/wg"+str(i)+".conf"
-		error_msg = "wireguard.gen_configurations: error: ssh command returned non-zero code"
+		error_msg = "wireguard.gen_configurations: ssh command returned non-zero code"
 		vm_run(wg_cmd, err=error_msg)
 		i+=1
 

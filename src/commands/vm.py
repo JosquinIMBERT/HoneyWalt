@@ -28,11 +28,11 @@ def vm_shell(options):
 			else:
 				break
 		if i>=24:
-			eprint("vm shell: error: failed to connect to the vm")
+			eprint("vm shell: failed to connect to the vm")
 
 def vm_start(options):
 	if vm.state():
-		eprint("vm start: error: the VM is already running")
+		eprint("vm start: the VM is already running")
 	phase = options.phase[0]
 	vm.start(phase)
 

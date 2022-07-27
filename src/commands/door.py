@@ -35,12 +35,12 @@ def door_add(options):
 	# Check device (the device should be registered first)
 	device = find(conf["device"], dev, "node")
 	if device is None:
-		eprint("door add: error: device not found")
+		eprint("door add: device not found")
 
 	# Check door doesn't exist
 	door = find(conf["door"], ip, "host")
 	if door is not None:
-		eprint("door add: error: door already exists")
+		eprint("door add: door already exists")
 
 	# Add the door
 	new_door = {
@@ -62,14 +62,14 @@ def door_chg(options):
 	new_ip = None if options.ip_address is None else options.ip_address[0]
 	new_dev = None if options.device is None else options.device[0]
 	if new_ip is None and new_dev is None:
-		eprint("door change: error: no new value was given")
+		eprint("door change: no new value was given")
 	
 	conf = glob.CONFIG
 
 	# Find the door
 	door = find(conf["door"], ip, "host")
 	if door is None:
-		eprint("door change: error: door not found")
+		eprint("door change: door not found")
 
 	# Update the fields
 	if new_ip is not None:
@@ -93,7 +93,7 @@ def door_del(options):
 	# Find the door
 	door = find_id(conf["door"], ip, "host")
 	if door == -1:
-		eprint("door change: error: door not found")
+		eprint("door change: door not found")
 
 	del conf["door"][door]
 	

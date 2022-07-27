@@ -25,59 +25,59 @@ class ControlSocket:
 			else:
 				break
 		if i>=15:
-			eprint("ControlSocket.__init__: error: failed to bind socket, VM probably failed to boot")
+			eprint("ControlSocket.__init__: failed to bind socket, VM probably failed to boot")
 		self.socket.settimeout(240) # Timeout for VM connection is 4min
 		# (We wait both for the VM to boot and for WalT to start)
 		self.socket.listen(1)
 		self.phase = phase
 
 	def initiate(self, backends=[], usernames=[], passwords=[], images=[]):
-		log(glob.INFO, "ControlSocket: waiting VM boot")
+		log(glob.DEBUG, "ControlSocket: waiting VM boot")
 		try:
 			self.conn, addr = self.socket.accept()
 		except socket.timeout:
-			eprint("ControlSocket.initiate: error: it seems like the VM failed to boot.")
+			eprint("ControlSocket.initiate: it seems like the VM failed to boot.")
 		except:
-			eprint("ControlSocket.initiate: error: unknown error occured when waiting for the VM")
+			eprint("ControlSocket.initiate: unknown error occured when waiting for the VM")
 		else:
-			log(glob.INFO, "ControlSocket: VM booted successfully")
-			log(glob.INFO, "ControlSocket: sending phase")
+			log(glob.DEBUG, "ControlSocket: VM booted successfully")
+			log(glob.DEBUG, "ControlSocket: sending phase")
 			self.send(str(self.phase))
 			self.wait_confirm()
 			
 			if self.phase == 1:
-				log(glob.INFO, "ControlSocket: sending images")
+				log(glob.DEBUG, "ControlSocket: sending images")
 				self.send_elems(images)
 				if self.wait_confirm():
 					# Sending the users to be added to the images
 					# This will allow cowrie to connect (and will
 					# allow brut force from a node to another)
-					log(glob.INFO, "ControlSocket: sending usernames")
+					log(glob.DEBUG, "ControlSocket: sending usernames")
 					self.send_elems(usernames)
 					self.wait_confirm()
 
-					log(glob.INFO, "ControlSocket: sending passwords")
+					log(glob.DEBUG, "ControlSocket: sending passwords")
 					self.send_elems(passwords)
 					self.wait_confirm()
 					
-					log(glob.INFO, "ControlSocket: sending backends")
+					log(glob.DEBUG, "ControlSocket: sending backends")
 					self.send_elems(backends)
 					self.wait_confirm()
 				else:
-					eprint("ControlSocket.initiate: error: failed to download WalT images on the VM")
+					eprint("ControlSocket.initiate: failed to download WalT images on the VM")
 				ips = self.recv_elems()
 				self.send_confirm()
-				log(glob.INFO, "ControlSocket: received ips: "+str(ips))
+				log(glob.DEBUG, "ControlSocket: received ips: "+str(ips))
 				return ips
 			else:
-				log(glob.INFO, "ControlSocket: sending images")
+				log(glob.DEBUG, "ControlSocket: sending images")
 				self.send_elems(images)
 				self.wait_confirm()
 
-				log(glob.INFO, "ControlSocket: sending backends")
+				log(glob.DEBUG, "ControlSocket: sending backends")
 				self.send_elems(backends)
 				self.wait_confirm(timeout=150) # Confirms backends booted successfully (timeout=2m30)
-				log(glob.INFO, "ControlSocket: walt nodes booted successfully")
+				log(glob.DEBUG, "ControlSocket: walt nodes booted successfully")
 			return None
 
 	def send_confirm(self):
@@ -102,12 +102,12 @@ class ControlSocket:
 		try:
 			res = self.conn.recv(2048)
 		except socket.timeout:
-			eprint("ControlSocket.recv: error: reached timeout")
+			eprint("ControlSocket.recv: reached timeout")
 		except:
-			eprint("ControlSocket.recv: error: an unknown error occured")
+			eprint("ControlSocket.recv: an unknown error occured")
 		else:
 			if not res:
-				eprint("ControlSocket.recv: error: Connection terminated")
+				eprint("ControlSocket.recv: Connection terminated")
 			return to_string(res)
 
 	def send_elems(self, elems, sep=" "):

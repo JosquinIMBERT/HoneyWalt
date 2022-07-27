@@ -16,10 +16,14 @@ def wprint(*args, **kwargs):
 
 def log(level, *args, **kwargs):
 	if level <= glob.LOG_LEVEL:
-		if level <= glob.WARNING: # ERROR and WARNING
-			print(*args, file=sys.stderr, **kwargs)
-		else: # INFO
-			print(*args, **kwargs)
+		if level == glob.ERROR:
+			print("[ERROR]", *args, file=sys.stderr, **kwargs)
+		elif level == glob.WARNING:
+			print("[WARNING]", *args, **kwargs)
+		elif level == glob.INFO:
+			print("[INFO]", *args, **kwargs)
+		else:
+			print("[DEBUG]", *args, **kwargs)
 
 # Find an object in the "objects" list with field "field" equal "target"
 def find(objects, target, field):
@@ -59,9 +63,9 @@ def kill_from_file(filename, filetype="pid"):
 		kill_cmd = "ssh -S "+filename+" -O exit 0.0.0.0"
 		res = subprocess.run(kill_cmd, shell=True ,check=True, text=True)
 		if res.returncode != 0:
-			eprint("utils.kill_from_file: error: ssh exit command returned non-zero code")
+			eprint("utils.kill_from_file: ssh exit command returned non-zero code")
 	else:
-		eprint("utils.kill_from_file: error: unknown file type")
+		eprint("utils.kill_from_file: unknown file type")
 
 # Print the markdown help page from the documentation directory
 def markdown_help(name):

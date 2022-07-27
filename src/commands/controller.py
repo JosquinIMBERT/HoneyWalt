@@ -24,7 +24,7 @@ def controller_set(options):
 	latency = None if options.latency is None else options.latency[0]
 
 	if debit is None and latency is None:
-		eprint("controller set: error: no new value was given")
+		eprint("controller set: no new value was given")
 
 	conf = glob.CONFIG
 
@@ -33,14 +33,14 @@ def controller_set(options):
 		if match_value(debit, rate_unit):
 			conf["controller"]["debit"] = debit
 		else:
-			eprint("controller set: error: invalid debit.\nRun \"honeywalt controller set help\" to see format")
+			eprint("controller set: invalid debit.\nRun \"honeywalt controller set help\" to see format")
 
 	if latency is not None:
 		time_unit = "[mu]?(s|sec|secs)"
 		if match_value(latency, time_unit):
 			conf["controller"]["latency"] = latency
 		else:
-			eprint("controller set: error: invalid latency.\nRun \"honeywalt controller set help\" to see format")
+			eprint("controller set: invalid latency.\nRun \"honeywalt controller set help\" to see format")
 
 	set_conf(conf)
 
