@@ -3,9 +3,6 @@ import os, select, socket, sys, threading, time
 import glob
 from utils import *
 
-# TODO: check how to use untrusted/unsafe strings
-#		(when checking the values returned by the
-#		VM)
 
 def to_bytes(string):
 	b = bytearray()

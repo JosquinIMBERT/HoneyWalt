@@ -12,6 +12,9 @@ from control_socket import ControlSocket
 
 # Start HoneyWalt
 def honeywalt_start(options):
+	if is_running():
+		eprint("honeywalt_start: error: please stop HoneyWalt before to start")
+
 	# Check if changes were commited
 	if glob.CONFIG["need_commit"] == "Empty":
 		eprint("Your configuration is empty")
@@ -42,8 +45,8 @@ def honeywalt_start(options):
 	cowrie.start()
 
 	# Start wireguard
-	wg.start_ssh_tunnels()
 	wg.start_tunnels()
+	wg.start_tcp_tunnels()
 
 	# Start traffic control
 	traffic.start_control()
@@ -108,7 +111,8 @@ def honeywalt_commit(options, force=False):
 def honeywalt_stop(options):
 	cowrie.stop_tunnels()
 	cowrie.stop()
-	wg.stop()
+	wg.stop_tcp_tunnels()
+	wg.stop_tunnels()
 	vm.stop()
 	traffic.stop_control()
 
@@ -130,7 +134,8 @@ def honeywalt_status(options):
 	vm_pid = vm.state()
 	if vm_pid is not None:
 		print("The VM is running with pid "+vm_pid)
-	print("The VM is not running")
+	else:
+		print("The VM is not running")
 	
 	# Cowrie
 	nb_cowrie_pids = cowrie.state()

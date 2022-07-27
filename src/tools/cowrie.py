@@ -5,8 +5,6 @@ from string import Template
 from utils import *
 import glob
 
-# TO BE TESTED: start_tunnels_to_dmz, start, start_tunnels_to_doors
-
 
 def del_configurations():
 	path = to_root_path("run/cowrie/conf")
@@ -106,7 +104,7 @@ def start_tunnels_to_doors():
 
 
 def stop_tunnels():
-	for p in ["run/ssh/cowrie-dmz", "run/ssh/cowrie-out"]:
+	for p in ["run/ssh/cowrie-out", "run/ssh/cowrie-dmz"]:
 		path = to_root_path(p)
 		for killpath in os.listdir(path):
 			kill_from_file(os.path.join(path, killpath), type="ssh")
