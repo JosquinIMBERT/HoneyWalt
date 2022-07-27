@@ -19,7 +19,7 @@ def init(conf, vm_priv, vm_pub, door_priv, door_pub):
 	global CONFIG
 
 	# Miscellaneous
-	global LOG_LEVEL, DEBUG, INFO, WARNING, ERROR
+	global LOG_LEVEL, COMMAND, DEBUG, INFO, WARNING, ERROR
 	
 	LISTEN_PORTS=2000
 	BACKEND_PORTS=3000
@@ -42,6 +42,7 @@ def init(conf, vm_priv, vm_pub, door_priv, door_pub):
 	CONFIG = conf
 
 	LOG_LEVEL = 0
+	COMMAND = 4
 	DEBUG = 3
 	INFO = 2
 	WARNING = 1
@@ -58,6 +59,8 @@ def set_log_level(log_level):
 		LOG_LEVEL = INFO
 	elif log_level=="DEBUG":
 		LOG_LEVEL = DEBUG
+	elif log_level=="CMD":
+		LOG_LEVEL = COMMAND
 	else:
 		print("honeywalt: invalid log level")
 		sys.exit(1)

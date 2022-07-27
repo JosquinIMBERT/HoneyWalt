@@ -22,8 +22,10 @@ def log(level, *args, **kwargs):
 			print("[WARNING]", *args, **kwargs)
 		elif level == glob.INFO:
 			print("[INFO]", *args, **kwargs)
-		else:
+		elif level == glob.WARNING:
 			print("[DEBUG]", *args, **kwargs)
+		elif level == glob.COMMAND:
+			print("[COMMAND]", *args, **kwargs)
 
 # Find an object in the "objects" list with field "field" equal "target"
 def find(objects, target, field):
@@ -101,6 +103,7 @@ def print_object_array(objects, fields):
 
 
 def run(command, error, output=False, timeout=None):
+	log(glob.COMMAND, command)
 	res = subprocess.run(command, shell=True ,check=True, text=True, capture_output=output, timeout=timeout)
 	if res.returncode != 0:
 		eprint(error)

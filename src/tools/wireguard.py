@@ -159,7 +159,7 @@ def start_tcp_tunnels():
 		prog = to_root_path("src/tools/wg_tcp_adapter.py")
 		pid_file = to_root_path("run/wg_tcp_adapter/tunnel"+str(i)+".pid")
 		local_cmd = "python3 "+prog+" controller "+local_args+" & echo $!>"+pid_file
-		run(local_cmd)
+		run(local_cmd, "failed to start udp/tcp adapter")
 		i+=1
 
 
