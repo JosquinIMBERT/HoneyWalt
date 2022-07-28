@@ -101,7 +101,7 @@ def gen_configurations(serv_privkeys, serv_pubkeys, cli_privkeys, cli_pubkeys):
 			"id": i+1,
 			"vm_privkey": cli_privkeys[i],
 			"server_pubkey": serv_pubkeys[server_id],
-			"server_ip": glob.CONTROL_IP,
+			"server_ip": "10.0.0.1",
 			"server_port": glob.WIREGUARD_PORTS+i
 		})
 		# Write configuration to a file
