@@ -65,7 +65,8 @@ def gen_configurations(serv_privkeys, serv_pubkeys, cli_privkeys, cli_pubkeys):
 		# Generate Configuration
 		conf_filename = "server"+str(i)+".conf"
 		server_config = server_itf_temp.substitute({
-			"server_privkey": serv_privkeys[i]
+			"server_privkey": serv_privkeys[i],
+			"server_port": glob.WG_UDP_PORT
 		})
 		for cli_pubkey in cli_pubkeys:
 			server_config += "\n\n" + server_peer_temp.substitute({

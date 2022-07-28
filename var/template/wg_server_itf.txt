@@ -2,7 +2,7 @@
 # Name = wg
 PrivateKey = ${server_privkey} # EC2 private key
 Address = 192.168.0.254/24
-ListenPort = 10000
+ListenPort = ${server_port}
 
 PostUp = iptables -A POSTROUTING -t nat -s 192.168.0.0/24 -j MASQUERADE
 

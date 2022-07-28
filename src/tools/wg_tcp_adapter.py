@@ -70,14 +70,13 @@ def door_tunnel(
 		try:
 			tcp_sock, tcp_addr = tcp_listen.accept()
 			with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as udp_sock:
-				udp_sock.connect((udp_host, udp_port))
 				sel_list = [udp_sock, tcp_sock]
 				try:
 					while True:
 						rready, _, _ = select.select(sel_list, [], [])
 						for ready in rready:
 							if ready is udp_sock:
-								msg = udp_sock.recv(1024)
+								msg, addr = udp_sock.recvfrom(1024)
 								if not msg: break
 								msg = encode_len(msg) + msg
 								tcp_sock.sendall(msg)
