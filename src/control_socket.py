@@ -31,7 +31,7 @@ class ControlSocket:
 		self.socket.listen(1)
 		self.phase = phase
 
-	def initiate(self, backends=[], usernames=[], passwords=[], images=[]):
+	def initiate(self, backends=[], macs=[], usernames=[], passwords=[], images=[]):
 		log(glob.DEBUG, "ControlSocket: waiting VM boot")
 		try:
 			self.conn, addr = self.socket.accept()
@@ -62,6 +62,10 @@ class ControlSocket:
 					
 					log(glob.DEBUG, "ControlSocket: sending backends")
 					self.send_elems(backends)
+					self.wait_confirm()
+
+					log(glob.DEBUG, "ControlSocket: sending MACs")
+					self.send_elems(macs)
 					self.wait_confirm()
 				else:
 					eprint("ControlSocket.initiate: failed to download WalT images on the VM")
