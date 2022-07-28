@@ -98,10 +98,11 @@ def gen_configurations(serv_privkeys, serv_pubkeys, cli_privkeys, cli_pubkeys):
 		client_config = client_temp.substitute({
 			"table": glob.WIREGUARD_PORTS+i,
 			"dev_ip": dev["ip"],
-			"id": i,
+			"id": i+1,
 			"vm_privkey": cli_privkeys[i],
 			"server_pubkey": serv_pubkeys[server_id],
-			"server_ip": glob.CONFIG["door"][server_id]["host"]
+			"server_ip": glob.CONTROL_IP,
+			"server_port": glob.WIREGUARD_PORTS+i
 		})
 		# Write configuration to a file
 		with open(os.path.join(conf_path, conf_filename), "w") as conf_file:
@@ -109,7 +110,7 @@ def gen_configurations(serv_privkeys, serv_pubkeys, cli_privkeys, cli_pubkeys):
 		# Copy configuration to the server
 		scp_cmd = scp_temp.substitute({
 			"file":conf_filename,
-			"addr":"10.0.0.2",
+			"addr":glob.VM_IP,
 			"remote_path":"/etc/wireguard/wg"+str(i)+".conf",
 			"key":glob.VM_PRIV_KEY,
 			"port":22

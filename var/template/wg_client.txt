@@ -7,6 +7,6 @@ PostUp = ip -4 rule add from ${dev_ip} table ${table}
 
 [Peer]
 PublicKey = ${server_pubkey}
-Endpoint = ${server_ip}:51820
+Endpoint = ${server_ip}:${server_port}
 AllowedIPs = 0.0.0.0/0
 PersistentKeepalive = 25

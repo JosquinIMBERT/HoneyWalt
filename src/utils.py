@@ -148,7 +148,7 @@ def to_root_path(path):
 def is_pid(file):
 	if exists(file):
 		with open(file, "r") as pidfile:
-			pid = pidfile.read()
+			pid = pidfile.read().strip()
 			if pid != "":
 				return str(int(pid))
 	return None
