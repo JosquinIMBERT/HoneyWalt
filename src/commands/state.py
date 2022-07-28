@@ -33,15 +33,23 @@ def honeywalt_start(options):
 	log(glob.INFO, "Start: starting VM")
 	vm.start(2)
 	glob.VM_SOCK = ControlSocket(2)
-	wg_ports = []
+	
+	# List the backends
 	backends = []
 	i=0
 	for dev in glob.CONFIG["device"]:
-		wg_ports += [ glob.WIREGUARD_PORTS+i ]
 		backends += [ dev["node"] ]
 		i+=1
+	
+	# List the images
+	images = []
+	i=0
+	for img in glob.CONFIG["image"]:
+		images += [ img["name"] ]
+
+	# Initiate control
 	log(glob.INFO, "Start: initiating VM control")
-	glob.VM_SOCK.initiate()
+	glob.VM_SOCK.initiate(backends=backends, images=images)
 	
 	# Start tunnels between cowrie and devices
 	log(glob.INFO, "Start: starting tunnels between cowrie and Walt nodes")
