@@ -175,7 +175,8 @@ def stop_tcp_tunnels():
 		door_run(door, "kill \$(cat /root/tunnel.pid)")
 	path = to_root_path("run/wg_tcp_adapter")
 	for pidpath in os.listdir(path):
-		kill_from_file(os.path.join(path, pidpath))
+		if pidpath.endswith(".pid"):
+			kill_from_file(os.path.join(path, pidpath))
 
 
 def change_device_server():
