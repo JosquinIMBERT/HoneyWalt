@@ -22,7 +22,7 @@ def log(level, *args, **kwargs):
 			print("[WARNING]", *args, **kwargs)
 		elif level == glob.INFO:
 			print("[INFO]", *args, **kwargs)
-		elif level == glob.WARNING:
+		elif level == glob.DEBUG:
 			print("[DEBUG]", *args, **kwargs)
 		elif level == glob.COMMAND:
 			print("[COMMAND]", *args, **kwargs)

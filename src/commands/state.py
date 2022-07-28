@@ -110,7 +110,7 @@ def honeywalt_commit(options, force=False):
 		devs += [ dev["node"] ]
 		macs += [ dev["mac"] ]
 	log(glob.INFO, "Commit: initiating VM control")
-	ips = glob.VM_SOCK.initiate(backends=devs, images=img_name, usernames=img_user, passwords=img_pass)
+	ips = glob.VM_SOCK.initiate(backends=devs, macs=macs, images=img_name, usernames=img_user, passwords=img_pass)
 
 	i=0
 	for dev in glob.CONFIG["device"]:
