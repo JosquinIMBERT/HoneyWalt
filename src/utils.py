@@ -1,4 +1,4 @@
-import os, signal, sys, subprocess
+import errno, os, signal, sys, subprocess
 from os.path import abspath, dirname, exists, join
 from string import Template
 
