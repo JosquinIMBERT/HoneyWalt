@@ -10,14 +10,14 @@ It is also in charge of hosting a Virtual Machine (VM) that runs the Walt server
 
 Two parameters can be defined on the controller:
 
-- The debit: alterates the debit (throughput) of the attacker's outgoing connections
+- The throughput: alterates the throughput of the attacker's outgoing connections
 - The latency: change the latency of the outgoing connections
 
 ## Units
 
 The units are the same as in the tc linux utility.
 
-For the debit, the following rate units are accepted:
+For the throughput, the following rate units are accepted:
 
 - bit: Bits per second
 - kbit: Kilobits per second
@@ -30,10 +30,10 @@ For the debit, the following rate units are accepted:
 - gbps: Gigabytes per second
 - tbps: Terabytes per second
 
-For example, set the debit to 10 Megabits per seconds:
+For example, set the throughput to 10 Megabits per seconds:
 
 ```bash
-honeywalt controller set --debit 10mbit
+honeywalt controller set --throughput 10mbit
 ```
 
 For the latency, the following time units are accepted:

@@ -79,7 +79,7 @@ def main():
 	
 	# Set controller options
 	ctrl_set_sp = ctrl_subparsers.add_parser("set", help="Set controller parameters")
-	ctrl_set_sp.add_argument("-d", "--debit", nargs=1, help="Define honeypot's outgoing traffic debit")
+	ctrl_set_sp.add_argument("-t", "--throughput", nargs=1, help="Define honeypot's outgoing traffic throughput")
 	ctrl_set_sp.add_argument("-l", "--latency", nargs=1, help="Define honeypot's outgoing traffic latency")
 	
 	# Controller show

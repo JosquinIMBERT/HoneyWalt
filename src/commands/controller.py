@@ -20,20 +20,20 @@ def match_value(val, unit):
 
 
 def controller_set(options):
-	debit = None if options.debit is None else options.debit[0]
+	throughput = None if options.throughput is None else options.throughput[0]
 	latency = None if options.latency is None else options.latency[0]
 
-	if debit is None and latency is None:
+	if throughput is None and latency is None:
 		eprint("controller set: no new value was given")
 
 	conf = glob.CONFIG
 
-	if debit is not None:
+	if throughput is not None:
 		rate_unit = "[kmgt]?(bps|bit)"
-		if match_value(debit, rate_unit):
-			conf["controller"]["debit"] = debit
+		if match_value(throughput, rate_unit):
+			conf["controller"]["throughput"] = throughput
 		else:
-			eprint("controller set: invalid debit.\nRun \"honeywalt controller set help\" to see format")
+			eprint("controller set: invalid throughput.\nRun \"honeywalt controller set help\" to see format")
 
 	if latency is not None:
 		time_unit = "[mu]?(s|sec|secs)"
@@ -47,7 +47,7 @@ def controller_set(options):
 
 def controller_show(options):
 	conf = glob.CONFIG
-	print("debit: "+conf["controller"]["debit"])
+	print("throughput: "+conf["controller"]["throughput"])
 	print("latency: "+conf["controller"]["latency"])
 
 

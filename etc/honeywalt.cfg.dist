@@ -2,7 +2,7 @@
     "need_commit": "Empty",
     "door": [],
     "controller": {
-        "debit": "10mbit",
+        "throughput": "10mbit",
         "latency": "50usec"
     },
     "device": [],
