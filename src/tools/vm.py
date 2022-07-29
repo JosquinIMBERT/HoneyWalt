@@ -37,7 +37,7 @@ def stop():
 	try:
 		vm_run("shutdown now", timeout=10)
 	except TimeoutExpired:
-		wprint("vm.stop: warning: soft reboot failed. Starting hard reboot.")
+		log(glob.WARNING, "vm.stop: soft reboot failed. Starting hard reboot.")
 
 	# Hard reboot (kill qemu process)
 	path = to_root_path("run/vm.pid")

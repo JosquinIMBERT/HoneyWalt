@@ -15,7 +15,9 @@ def honeywalt_vm(options):
 		vm_help()
 
 def vm_shell(options):
-	if vm.state() and vm.phase()==1:
+	if vm.state():
+		if vm.phase()!=1:
+			log(glob.WARNING, "The VM seems to be exposed.\nBe careful with what you run, the attacker could have infected it.")
 		i=0
 		while i<24:
 			i+=1
@@ -38,7 +40,7 @@ def vm_start(options):
 
 def vm_stop(options):
 	if not vm.state():
-		wprint("vm stop: the VM is already stopped")
+		log(glob.WARNING, "vm stop: the VM is already stopped")
 	else:
 		vm.stop()
 

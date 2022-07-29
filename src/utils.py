@@ -10,10 +10,6 @@ def eprint(*args, exit=True, **kwargs):
     if exit:
     	sys.exit(1)
 
-# Print a warning
-def wprint(*args, **kwargs):
-    log(glob.WARNING, *args, **kwargs)
-
 def log(level, *args, **kwargs):
 	if level <= glob.LOG_LEVEL:
 		if level == glob.ERROR:
