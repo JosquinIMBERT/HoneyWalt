@@ -1,6 +1,18 @@
 #!/bin/bash
 
-# Use tc-u32 to match port(s)
+#######################
+###      INPUT      ###
+#######################
+
+if [[ $# != 5 ]]; then
+	echo "Usage: $0 <dev> <addr> <latency> <throughput> <ports>"
+	echo -e "\tdev: the device (network interface)"
+	echo -e "\taddr: the address of the controller on the DMZ side"
+	echo -e "\tlatency: latency to which the traffic should be limited on the given ports"
+	echo -e "\tthroughput: throughput to which the traffic should be limited on the given ports"
+	echo -e "\tports: the ports on which the traffic should be limited"
+	exit 1
+fi
 
 
 
@@ -8,11 +20,21 @@
 ###    Variables    ###
 #######################
 
-dmz_addr="192.168.192.0/22"
-dmz_itf="enp"
-out_itf="enp1s0"
-vm_addr="10.0.2.15"
-external_server="192.168.172.1"
+					#Examples of values
+dev=$1				#"tap-out"
+addr_dmz_side=$2	#"10.0.0.1"
+latency=$3			#"3000ms"
+throughput=$4		#"5kbit"
+ports=$5			#"6000,6001"
+
+port_min=$(echo $ports | cut -d"," -f1)
+port_max=$(echo $ports | rev | cut -d"," -f1 | rev)
+
+if [ "$port_min" = "$port_max" ]; then
+	port_range=$port_min
+else
+	port_range="$port_min:$port_max"
+fi
 
 
 
@@ -49,9 +71,9 @@ iptables -t mangle -P POSTROUTING ACCEPT
 ###    FIREWALL    ###
 ######################
 
-iptables -P PREROUTING -t mangle -j DROP
-iptables -A PREROUTING -t mangle -p udp --dport WG_UGP_PORTS -j ACCEPT
+iptables -A PREROUTING -t mangle -p udp -d $addr_dmz_side --dport $port_range -j ACCEPT
 iptables -A PREROUTING -t mangle -p tcp	-m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -P PREROUTING -t mangle -j DROP
 
 
 
@@ -59,16 +81,26 @@ iptables -A PREROUTING -t mangle -p tcp	-m state --state ESTABLISHED,RELATED -j 
 ### TRAFFIC CONTROL ###
 #######################
 
-tc qdisc add dev $DEV root handle 1:0 prio priomap 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+# Source: https://stackoverflow.com/questions/40196730/simulate-network-latency-on-specific-port-using-tc
+
+if [ "$(tc qdisc show dev $dev root | grep pfifo_fast)" = "" ]; then
+	echo -n "There is already a qdisc. Deleting it ... " && \
+		tc qdisc delete dev $dev root && \
+		echo "done." || echo "failed."
+fi
+echo -n "Adding new root qdisc ... " && \
+	tc qdisc add dev $dev root handle 1:0 prio priomap 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 && \
+	echo "done." || echo "failed."
 
 # METRICS:
-# delay ~= latency (latence)
+# delay = latency (latence)
 # rate = throughput (débit)
-tc qdisc add dev $DEV parent 1:2 handle 20: netem delay $LATENCY rate $THROUGHPUT
+echo -n "Adding netem qdisc ... " && \
+	tc qdisc add dev $dev parent 1:2 handle 20: netem delay $latency rate $throughput && \
+	echo "done." || echo "failed."
 
-tc filter add dev $DEV parent 1:0 protocol ip u32 match ip sport $PORTS 0xffff flowid 1:2
-
-tc filter add dev $DEV parent 1:0 protocol ip basic \
-	match "cmp( u16 at 0 layer transport ge $PORT_MIN ) \
-	and cmp( u16 at 0 layer transport le $PORT_MAX )" \
-	flowid 1:2
+echo -n "Adding filters ..."
+for port in $(echo $ports | tr "," " "); do
+	tc filter add dev $dev parent 1:0 protocol ip u32 match ip sport $port 0xffff flowid 1:2
+done
+echo "done."

@@ -1,5 +1,22 @@
 #!/bin/bash
 
+#######################
+###      INPUT      ###
+#######################
+
+if [[ $# != 1 ]]; then
+	echo "Usage: $0 <dev>"
+	echo -e "\tdev: the device (network interface)"
+	exit 1
+fi
+
+
+
+#######################
+###    VARIABLES    ###
+#######################
+
+dev=$1
 
 
 #######################
@@ -30,4 +47,6 @@ iptables -t mangle -P OUTPUT ACCEPT
 iptables -t mangle -P POSTROUTING ACCEPT
 
 # TC
-# TODO
+if [ "$(tc qdisc show dev $dev root | grep pfifo_fast)" = "" ]; then
+	tc qdisc delete dev $dev root
+fi

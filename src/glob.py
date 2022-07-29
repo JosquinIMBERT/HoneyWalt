@@ -7,7 +7,7 @@ def init(conf, vm_priv, vm_pub, door_priv, door_pub):
 	global WG_UDP_PORT
 
 	# IP
-	global VM_IP, CONTROL_IP
+	global VM_IP, CONTROL_IP, IP_FOR_DMZ
 
 	# Keys
 	global VM_PRIV_KEY, VM_PUB_KEY, DOOR_PRIV_KEY, DOOR_PUB_KEY
@@ -30,6 +30,7 @@ def init(conf, vm_priv, vm_pub, door_priv, door_pub):
 	WG_TCP_PORT=51819
 
 	VM_IP = "10.0.0.2"
+	IP_FOR_DMZ = "10.0.0.1"
 	CONTROL_IP = "127.0.0.1"
 
 	VM_PRIV_KEY=vm_priv
