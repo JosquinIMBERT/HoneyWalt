@@ -11,9 +11,9 @@ def start_control():
 	prog = to_root_path("src/script/control-up.sh")
 	args = dev+" "+glob.IP_FOR_DMZ+" "+latency+" "+throughput+" "+ports
 	command = prog+" "+args
-	run(command, "traffic.start_control: failed to start control")
+	run(command, "failed to start control")
 
 def stop_control():
 	prog = to_root_path("src/script/control-down.sh")
 	command = prog+" tap-out"
-	run(command, "traffic.stop_control: failed to stop control")
+	run(command, "failed to stop control")

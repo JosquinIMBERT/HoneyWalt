@@ -24,7 +24,7 @@ def controller_set(options):
 	latency = None if options.latency is None else options.latency[0]
 
 	if throughput is None and latency is None:
-		eprint("controller set: no new value was given")
+		eprint("no new value was given")
 
 	conf = glob.CONFIG
 
@@ -33,14 +33,14 @@ def controller_set(options):
 		if match_value(throughput, rate_unit):
 			conf["controller"]["throughput"] = throughput
 		else:
-			eprint("controller set: invalid throughput.\nRun \"honeywalt controller set help\" to see format")
+			eprint("invalid throughput.\nRun \"honeywalt controller set help\" to see format")
 
 	if latency is not None:
 		time_unit = "[mu]?(s|sec|secs)"
 		if match_value(latency, time_unit):
 			conf["controller"]["latency"] = latency
 		else:
-			eprint("controller set: invalid latency.\nRun \"honeywalt controller set help\" to see format")
+			eprint("invalid latency.\nRun \"honeywalt controller set help\" to see format")
 
 	set_conf(conf)
 

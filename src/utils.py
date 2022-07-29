@@ -1,8 +1,19 @@
-import errno, os, signal, sys, subprocess
+import errno, os, signal, sys, traceback, subprocess
 from os.path import abspath, dirname, exists, join
 from string import Template
 
 import glob
+
+def get_trace(start_func="main", nb_off=2):
+	calls = []
+	start = False
+	for frame in traceback.extract_stack():
+		if frame.name == start_func:
+			start = True
+		elif start:
+			calls += [ frame.name ]
+	calls = ".".join(calls[:-nb_off])
+	return calls
 
 # Print an error and exit
 def eprint(*args, exit=True, **kwargs):
@@ -13,9 +24,11 @@ def eprint(*args, exit=True, **kwargs):
 def log(level, *args, **kwargs):
 	if level <= glob.LOG_LEVEL:
 		if level == glob.ERROR:
-			print("[ERROR]", *args, file=sys.stderr, **kwargs)
+			trace = get_trace(nb_off=3)+":"
+			print("[ERROR]", trace, *args, file=sys.stderr, **kwargs)
 		elif level == glob.WARNING:
-			print("[WARNING]", *args, **kwargs)
+			trace = get_trace()+":"
+			print("[WARNING]", trace, *args, **kwargs)
 		elif level == glob.INFO:
 			print("[INFO]", *args, **kwargs)
 		elif level == glob.DEBUG:
@@ -61,9 +74,9 @@ def kill_from_file(filename, filetype="pid"):
 		kill_cmd = "ssh -S "+filename+" -O exit 0.0.0.0"
 		res = subprocess.run(kill_cmd, shell=True ,check=True, text=True)
 		if res.returncode != 0:
-			eprint("utils.kill_from_file: ssh exit command returned non-zero code")
+			eprint("failed to kill and ssh tunnel")
 	else:
-		eprint("utils.kill_from_file: unknown file type")
+		eprint("unknown file type")
 
 # Print the markdown help page from the documentation directory
 def markdown_help(name):

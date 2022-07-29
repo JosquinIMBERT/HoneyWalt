@@ -13,7 +13,7 @@ from control_socket import ControlSocket
 # Start HoneyWalt
 def honeywalt_start(options):
 	if is_running():
-		eprint("honeywalt_start: please stop HoneyWalt before to start")
+		eprint("please stop HoneyWalt before to start")
 
 	# Check if changes were commited
 	if glob.CONFIG["need_commit"] == "Empty":
@@ -27,10 +27,10 @@ def honeywalt_start(options):
 	delete(to_root_path("run/wg_tcp_adapter"), suffix=".pid")
 
 	# Allow cowrie user to access cowrie files
-	run("chown -R cowrie "+to_root_path("run/cowrie/"), "honeywalt start: failed chown cowrie")
+	run("chown -R cowrie "+to_root_path("run/cowrie/"), "failed chown cowrie")
 
 	# Start the VM
-	log(glob.INFO, "Start: starting VM")
+	log(glob.INFO, "starting VM")
 	vm.start(2)
 	glob.VM_SOCK = ControlSocket(2)
 	
@@ -48,29 +48,29 @@ def honeywalt_start(options):
 		images += [ img["name"] ]
 
 	# Initiate control
-	log(glob.INFO, "Start: initiating VM control")
+	log(glob.INFO, "initiating VM control")
 	glob.VM_SOCK.initiate(backends=backends, images=images)
 	
 	# Start tunnels between cowrie and devices
-	log(glob.INFO, "Start: starting tunnels between cowrie and Walt nodes")
+	log(glob.INFO, "starting tunnels between cowrie and Walt nodes")
 	cowrie.start_tunnels_to_dmz()
 
 	# Start cowrie
-	log(glob.INFO, "Start: starting cowrie")
+	log(glob.INFO, "starting cowrie")
 	cowrie.start()
 
 	# Start wireguard
-	log(glob.INFO, "Start: starting wireguard")
+	log(glob.INFO, "starting wireguard")
 	wg.start_tunnels()
-	log(glob.INFO, "Start: starting udp to tcp adapter")
+	log(glob.INFO, "starting udp to tcp adapter")
 	wg.start_tcp_tunnels()
 
 	# Start traffic control
-	log(glob.INFO, "Start: starting traffic control")
+	log(glob.INFO, "starting traffic control")
 	traffic.start_control()
 
 	# Start tunnels between cowrie and doors
-	log(glob.INFO, "Start: starting tunnels between doors and cowrie")
+	log(glob.INFO, "starting tunnels between doors and cowrie")
 	cowrie.start_tunnels_to_doors()
 
 
@@ -78,7 +78,7 @@ def honeywalt_start(options):
 # into acount on the next boot
 def honeywalt_commit(options, force=False):
 	if is_running():
-		eprint("honeywalt_commit: please stop HoneyWalt before to commit")
+		eprint("please stop HoneyWalt before to commit")
 
 	if glob.CONFIG["need_commit"] == "Empty":
 		eprint("Your configuration is empty")
@@ -91,10 +91,10 @@ def honeywalt_commit(options, force=False):
 	else:
 		regen = True
 	if regen:
-		log(glob.INFO, "Commit: generating cowrie configurations")
+		log(glob.INFO, "generating cowrie configurations")
 		cowrie.gen_configurations()
 
-	log(glob.INFO, "Commit: starting VM")
+	log(glob.INFO, "starting VM")
 	vm.start(1)
 	glob.VM_SOCK = ControlSocket(1)
 	img_name = []
@@ -109,7 +109,7 @@ def honeywalt_commit(options, force=False):
 	for dev in glob.CONFIG["device"]:
 		devs += [ dev["node"] ]
 		macs += [ dev["mac"] ]
-	log(glob.INFO, "Commit: initiating VM control")
+	log(glob.INFO, "initiating VM control")
 	ips = glob.VM_SOCK.initiate(backends=devs, macs=macs, images=img_name, usernames=img_user, passwords=img_pass)
 
 	i=0
@@ -119,9 +119,9 @@ def honeywalt_commit(options, force=False):
 	
 	# Generate and distribute wireguard configurations
 	if regen:
-		log(glob.INFO, "Commit: generating wireguard keys")
+		log(glob.INFO, "generating wireguard keys")
 		serv_privkeys, serv_pubkeys, cli_privkeys, cli_pubkeys = wg.gen_keys()
-		log(glob.INFO, "Commit: generating wireguard configurations")
+		log(glob.INFO, "generating wireguard configurations")
 		wg.gen_configurations(
 			serv_privkeys,
 			serv_pubkeys,
@@ -129,27 +129,27 @@ def honeywalt_commit(options, force=False):
 			cli_pubkeys
 		)
 
-	log(glob.INFO, "Commit: updating configuration file")
+	log(glob.INFO, "updating configuration file")
 	set_conf(glob.CONFIG, need_commit=False)
 
-	log(glob.INFO, "Commit: stopping VM")
+	log(glob.INFO, "stopping VM")
 	vm.stop()
 
 
 def honeywalt_stop(options):
-	log(glob.INFO, "Stop: stopping cowrie tunnels to doors")
+	log(glob.INFO, "stopping cowrie tunnels to doors")
 	cowrie.stop_tunnels_to_doors()
-	log(glob.INFO, "Stop: stopping cowrie")
+	log(glob.INFO, "stopping cowrie")
 	cowrie.stop()
-	log(glob.INFO, "Stop: stopping cowrie tunnels to dmz")
+	log(glob.INFO, "stopping cowrie tunnels to dmz")
 	cowrie.stop_tunnels_to_dmz()
-	log(glob.INFO, "Stop: stopping udp tcp adapter")
+	log(glob.INFO, "stopping udp tcp adapter")
 	wg.stop_tcp_tunnels()
-	log(glob.INFO, "Stop: stopping wireguard")
+	log(glob.INFO, "stopping wireguard")
 	wg.stop_tunnels()
-	log(glob.INFO, "Stop: stopping VM")
+	log(glob.INFO, "stopping VM")
 	vm.stop()
-	log(glob.INFO, "Stop: stopping traffic control")
+	log(glob.INFO, "stopping traffic control")
 	traffic.stop_control()
 
 

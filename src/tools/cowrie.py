@@ -20,7 +20,7 @@ def gen_configurations():
 	for dev in conf["device"]:
 		img = find(conf["image"], dev["image"], "name")
 		if img is None:
-			eprint("cowrie.gen_configurations: image not found for device "+dev["node"])
+			eprint("image not found for device "+dev["node"])
 		backend_user = img["user"]
 		backend_pass = img["pass"]
 		str_i = str(i)
@@ -59,7 +59,7 @@ def start_tunnels_to_dmz():
 			"vm_ip": vm_ip,
 			"key_path": glob.VM_PRIV_KEY
 		})
-		error_msg = "cowrie.start_tunnels_to_dmz: ssh command returned non-zero code"
+		error_msg = "failed to start tunnels between cowrie and dmz"
 		run(tunnel_cmd, error_msg)
 		i+=1
 
@@ -75,7 +75,7 @@ def start():
 			"pid_path": to_root_path("run/cowrie/pid/"+str(i)+".pid"),
 			"log_path": to_root_path("run/cowrie/log/"+str(i)+".log")
 		})
-		error_msg = "cowrie.start: failed to start cowrie"
+		error_msg = "failed to start cowrie"
 		run(cmd, error_msg)
 		i+=1
 
@@ -98,7 +98,7 @@ def start_tunnels_to_doors():
 			"host": door["host"],
 			"realssh_port": door["realssh"]
 		})
-		error_msg = "cowrie.start_tunnels_to_doors: ssh command returned non-zero code"
+		error_msg = "failed to start tunnels between cowrie and doors"
 		run(tunnel_cmd, error_msg)
 		i+=1
 

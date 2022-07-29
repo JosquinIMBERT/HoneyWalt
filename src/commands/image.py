@@ -22,12 +22,12 @@ def image_add(options):
 	# TODO: at some point, we need a cloneable image link for walt
 	#regex = re.compile("(walt|docker|hub):[a-z0-9\-]+/[a-z0-9\-]+(:[a-z0-9\-]+)?")
 	#if not regex.match(name):
-    #    eprint("image add: "+name+" is not an image clonable link")
+    #    eprint(name+" is not an image clonable link")
 
 	conf = glob.CONFIG
 
 	if find(conf["image"], name, "name") is not None:
-		eprint("image add: image already exists")
+		eprint("image already exists")
 
 	if username is None:
 		print("No username was given. Using username: root, password: root")
@@ -51,13 +51,13 @@ def image_chg(options):
 	password = None if options.password is None else options.password[0]
 
 	if username is None and password is None:
-		eprint("image change: no new value was given")
+		eprint("no new value was given")
 
 	conf = glob.CONFIG
 
 	image = find(conf["image"], name, "name")
 	if image is None:
-		eprint("image change: image not found")
+		eprint("image not found")
 
 	if username is not None:
 		image["user"] = username
@@ -72,11 +72,11 @@ def image_del(options):
 
 	img_id = find_id(glob.CONFIG["image"], img_name, "name")
 	if img_id == -1:
-		eprint("image del: unable to find image "+img_name)
+		eprint("unable to find image "+img_name)
 
 	dev = find(glob.CONFIG["device"], glob.CONFIG["image"][img_id]["name"], "image")
 	if dev is not None:
-		eprint("image del: device "+dev["node"]+" uses image "+img_name)
+		eprint("device "+dev["node"]+" uses image "+img_name)
 
 	del glob.CONFIG["image"][img_id]
 

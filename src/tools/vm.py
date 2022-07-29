@@ -18,7 +18,7 @@ def start(phase):
 		"tapout_up": to_root_path("src/script/tapout-up.sh"),
 		"tapout_down": to_root_path("src/script/tapout-down.sh")
 	})
-	run(vm_cmd, "vm.start: failed to start the VM")
+	run(vm_cmd, "failed to start the VM")
 
 
 def state():
@@ -37,7 +37,7 @@ def stop():
 	try:
 		vm_run("shutdown now", timeout=10)
 	except TimeoutExpired:
-		log(glob.WARNING, "vm.stop: soft reboot failed. Starting hard reboot.")
+		log(glob.WARNING, "soft reboot failed. Starting hard reboot.")
 
 	# Hard reboot (kill qemu process)
 	path = to_root_path("run/vm.pid")
