@@ -31,6 +31,8 @@ def vm_shell(options):
 				break
 		if i>=24:
 			eprint("vm shell: failed to connect to the vm")
+	else:
+		eprint("vm shell: the VM is not running")
 
 def vm_start(options):
 	if vm.state():
