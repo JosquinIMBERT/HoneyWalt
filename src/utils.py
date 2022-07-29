@@ -141,11 +141,27 @@ def to_root_path(path):
 	root_path = get_root_path()
 	return join(root_path, path)
 
+# Source: https://github.com/giampaolo/psutil/blob/5ba055a8e514698058589d3b615d408767a6e330/psutil/_psposix.py#L28-L53
+def pid_exists(pid):
+	if pid == 0:
+		return True
+	try:
+		os.kill(pid, 0)
+	except OSError as err:
+		if err.errno == errno.ESRCH:
+			return False
+		elif err.errno == errno.EPERM:
+			return True
+		else:
+			raise err
+	else:
+		return True
+
 def is_pid(file):
 	if exists(file):
 		with open(file, "r") as pidfile:
 			pid = pidfile.read().strip()
-			if pid != "":
+			if pid != "" and pid_exists(int(pid)):
 				return str(int(pid))
 	return None
 
