@@ -6,6 +6,7 @@ def start_control():
 	throughput = glob.CONFIG["controller"]["throughput"]
 	nb_ports = len(glob.CONFIG["door"])
 	ports_list = range(glob.WIREGUARD_PORTS, glob.WIREGUARD_PORTS+nb_ports)
+	ports_list = [str(p) for p in ports_list]
 	ports = ",".join(ports_list)
 
 	prog = to_root_path("src/script/control-up.sh")
