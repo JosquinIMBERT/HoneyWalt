@@ -122,18 +122,28 @@ def gen_configurations(serv_privkeys, serv_pubkeys, cli_privkeys, cli_pubkeys):
 
 
 def tunnels(state="up"):
-	start_temp = Template("wg-quick "+state+" ${wg}")
-
 	wg_cmd = "wg-quick "+state+" /etc/wireguard/wg.conf"
 	for door in glob.CONFIG["door"]:
 		error_msg = "wireguard.gen_configurations: ssh command returned non-zero code"
-		door_run(door, wg_cmd, err=error_msg)
+		try:
+			door_run(door, wg_cmd, err=error_msg)
+		except:
+			log(
+				glob.WARNING,
+				"Failed to set a wireguard interface "+state+" (door="+door["host"]+")."
+			)
 
 	i=0
 	for dev in glob.CONFIG["device"]:
 		wg_cmd = "wg-quick "+state+" /etc/wireguard/wg"+str(i)+".conf"
 		error_msg = "wireguard.gen_configurations: ssh command returned non-zero code"
-		vm_run(wg_cmd, err=error_msg)
+		try:
+			vm_run(wg_cmd, err=error_msg)
+		except:
+			log(
+				glob.WARNING,
+				"Failed to set a wireguard interface "+state+" (vm, client "+i+")."
+			)
 		i+=1
 
 
@@ -174,13 +184,20 @@ def stop_tunnels():
 
 def stop_tcp_tunnels():
 	for door in glob.CONFIG["door"]:
-		door_run(door, "kill \$(cat /root/tunnel.pid)")
+		try:
+			door_run(door, "kill \$(cat /root/tunnel.pid)")
+		except:
+			log(
+				glob.WARNING,
+				"Failed to stop a traffic shaper (door: "+door["host"]+")."
+			)
 	path = to_root_path("run/wg_tcp_adapter")
 	for pidpath in os.listdir(path):
 		if pidpath.endswith(".pid"):
-			kill_from_file(os.path.join(path, pidpath))
-
-
-def change_device_server():
-	# TODO
-	pass
+			try:
+				kill_from_file(os.path.join(path, pidpath))
+			except:
+				log(
+					glob.WARNING,
+					"Failed to stop a traffic shaper (pidfile:"+pidpath+")."
+				)

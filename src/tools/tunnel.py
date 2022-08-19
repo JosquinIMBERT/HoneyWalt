@@ -116,7 +116,13 @@ def stop_tunnels(directory):
 	path = to_root_path("run/ssh/"+directory)
 	for killpath in os.listdir(path):
 		if killpath.endswith(".sock"):
-			kill_from_file(os.path.join(path, killpath), filetype="ssh")
+			try:
+				kill_from_file(os.path.join(path, killpath), filetype="ssh")
+			except:
+				log(
+					glob.WARNING,
+					"Failed to close a SSH tunnel. The control socket is: "+killpath
+				)
 
 def stop_exposure_tunnels():
 	for directory in ["expose-out", "expose-dmz"]:

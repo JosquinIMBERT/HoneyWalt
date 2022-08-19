@@ -63,7 +63,13 @@ def stop():
 	path = to_root_path("run/cowrie/pid")
 	for pidpath in os.listdir(path):
 		if pidpath.endswith(".pid"):
-			kill_from_file(os.path.join(path, pidpath))
+			try:
+				kill_from_file(os.path.join(path, pidpath))
+			except:
+				log(
+					glob.WARNING,
+					"Failed to stop a cowrie instance. The pid file is: "+pidpath
+				)
 
 
 def state():

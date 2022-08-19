@@ -17,4 +17,7 @@ def start_control():
 def stop_control():
 	prog = to_root_path("src/script/control-down.sh")
 	command = prog+" tap-out"
-	run(command, "failed to stop control")
+	try:
+		run(command, "failed to stop control")
+	except:
+		log(glob.WARNING,"Failed to stop traffic control.")

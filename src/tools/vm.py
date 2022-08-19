@@ -33,13 +33,22 @@ def phase():
 
 
 def stop():
-	# Trying soft reboot (run shutdown command)
+	# Trying soft shutdown (run shutdown command)
 	try:
 		vm_run("shutdown now", timeout=10)
+		return
 	except TimeoutExpired:
-		log(glob.WARNING, "soft reboot failed. Starting hard reboot.")
+		log(glob.WARNING, "soft shutdown failed. Starting hard shutdown.")
 
-	# Hard reboot (kill qemu process)
+	# Hard shutdown (kill qemu process)
 	path = to_root_path("run/vm.pid")
 	if exists(path):
-		kill_from_file(path)
+		try:
+			kill_from_file(path)
+			return
+		except:
+			pass
+	log(
+		glob.WARNING,
+		"Failed to stop the VM (pidfile:"+path+")."
+	)
