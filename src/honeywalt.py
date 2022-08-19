@@ -118,12 +118,14 @@ def main():
 	dev_add_sp.add_argument("name", nargs=1, help="Name")
 	dev_add_sp.add_argument("mac_addr", nargs=1, help="MAC address")
 	dev_add_sp.add_argument("image", nargs=1, help="Walt image")
+	dev_add_sp.add_argument("-p", "--ports", nargs=1, help="Comma separated list of port numbers to be exposed")
 
 	# Change device
 	dev_chg_sp = dev_subparsers.add_parser("change", help="Change a backend device information")
 	dev_chg_sp.add_argument("name", nargs=1, help="Name")
 	dev_chg_sp.add_argument("-n", "--name", nargs=1, help="New device name", dest='new_name')
 	dev_chg_sp.add_argument("-i", "--image", nargs=1, help="New image")
+	dev_chg_sp.add_argument("-p", "--ports", nargs=1, help="Comma separated list of port numbers to be exposed")
 
 	# Delete device
 	dev_del_sp = dev_subparsers.add_parser("del", help="Delete a backend device")

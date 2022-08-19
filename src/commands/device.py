@@ -22,7 +22,7 @@ def device_add(options):
 	name = options.name[0]
 	mac_addr = options.mac_addr[0]
 	image = options.image[0]
-
+	ports = [] if options.ports is None else [int(port) for port in options.ports[0].split(",")]
 	conf = glob.CONFIG
 
 	regex = re.compile(r'^(walt|docker|hub):[a-z0-9\-]+/[a-z0-9\-]+(:[a-z0-9\-]+)?$')
@@ -34,13 +34,14 @@ def device_add(options):
 	   find(conf["device"], mac_addr, "mac") is not None:
 		eprint("device already exists")
 	
-	if find(conf["image"], image, "name") is None:
+	if find(conf["image"], image, "short_name") is None:
 		eprint("image not found")
 
 	new_dev = {
 		"node":name,
 		"image":image,
-		"mac":mac_addr
+		"mac":mac_addr,
+		"ports":ports
 	}
 	conf["device"] += [ new_dev ]
 	set_conf(conf)
@@ -50,14 +51,13 @@ def device_chg(options):
 	name = options.name[0]
 	new_name = None if options.new_name is None else options.new_name[0]
 	new_image = None if options.image is None else options.image[0]
-	
-	if new_name is None and new_image is None:
-		eprint("no new value was given")
+	new_ports = None if options.ports is None else [int(port) for port in options.ports[0].split(",")]
 
-	regex = re.compile(r'^(walt|docker|hub):[a-z0-9\-]+/[a-z0-9\-]+(:[a-z0-9\-]+)?$')
-	if regex.match(new_image):
-		log(glob.WARNING, new_image+" seem to be a cloneable image link. Extracting short name")
-		new_image = extract_short_name(new_image)
+	if new_image:
+		regex = re.compile(r'^(walt|docker|hub):[a-z0-9\-]+/[a-z0-9\-]+(:[a-z0-9\-]+)?$')
+		if regex.match(new_image):
+			log(glob.WARNING, new_image+" seem to be a cloneable image link. Extracting short name")
+			new_image = extract_short_name(new_image)
 
 	conf = glob.CONFIG
 
@@ -74,6 +74,9 @@ def device_chg(options):
 		if find(conf["image"], new_image, "name") is None:
 			eprint("image not found")
 		device["image"] = new_image
+
+	if new_ports is not None:
+		device["ports"] = new_ports
 
 	set_conf(conf)
 
@@ -96,7 +99,7 @@ def device_del(options):
 
 def device_show(options):
 	conf = glob.CONFIG
-	print_object_array(conf["device"], ["node", "mac", "image", "ip"])
+	print_object_array(conf["device"], ["node", "mac", "image", "ip", "ports"])
 
 
 def device_help():
