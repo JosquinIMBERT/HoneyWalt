@@ -23,7 +23,7 @@ def vm_shell(options):
 			i+=1
 			try:
 				run("ssh root@10.0.0.2 -i "+glob.VM_PRIV_KEY+" 2>/dev/null", "")
-			except:
+			except Exception:
 				if i==1:
 					print("Waiting for the VM to boot...")
 				time.sleep(5)
