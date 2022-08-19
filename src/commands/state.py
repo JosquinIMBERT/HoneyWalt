@@ -4,6 +4,7 @@ from config import set_conf
 import glob
 import tools.cowrie as cowrie
 import tools.traffic as traffic
+import tools.tunnel as tunnel
 import tools.vm as vm
 import tools.wireguard as wg
 from utils import *
@@ -53,7 +54,7 @@ def honeywalt_start(options):
 	
 	# Start tunnels between cowrie and devices
 	log(glob.INFO, "starting tunnels between cowrie and Walt nodes")
-	cowrie.start_tunnels_to_dmz()
+	tunnel.start_cowrie_tunnels_dmz()
 
 	# Start cowrie
 	log(glob.INFO, "starting cowrie")
@@ -71,7 +72,11 @@ def honeywalt_start(options):
 
 	# Start tunnels between cowrie and doors
 	log(glob.INFO, "starting tunnels between doors and cowrie")
-	cowrie.start_tunnels_to_doors()
+	tunnel.start_cowrie_tunnels_out()
+
+	# Start to expose other ports
+	log(glob.INFO, "starting exposed ports tunnels")
+	tunnel.start_exposure_tunnels()
 
 
 # Commit some persistent information on the VM so it is taken
@@ -137,12 +142,14 @@ def honeywalt_commit(options, force=False):
 
 
 def honeywalt_stop(options):
+	log(glob.INFO, "stopping exposed ports tunnels")
+	tunnel.stop_exposure_tunnels()
 	log(glob.INFO, "stopping cowrie tunnels to doors")
-	cowrie.stop_tunnels_to_doors()
+	tunnel.stop_cowrie_tunnels_out()
 	log(glob.INFO, "stopping cowrie")
 	cowrie.stop()
 	log(glob.INFO, "stopping cowrie tunnels to dmz")
-	cowrie.stop_tunnels_to_dmz()
+	tunnel.stop_cowrie_tunnels_dmz()
 	log(glob.INFO, "stopping udp tcp adapter")
 	wg.stop_tcp_tunnels()
 	log(glob.INFO, "stopping wireguard")

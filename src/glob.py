@@ -3,8 +3,8 @@ import sys
 def init(conf, vm_priv, vm_pub, door_priv, door_pub):
 	# Ports
 	global LISTEN_PORTS, BACKEND_PORTS, SOCKET_PORTS
-	global CONTROL_PORT, WIREGUARD_PORTS, WG_TCP_PORT
-	global WG_UDP_PORT
+	global CONTROL_PORT, WIREGUARD_PORTS, EXPOSE_PORTS
+	global WG_TCP_PORT, WG_UDP_PORT
 
 	# IP
 	global VM_IP, CONTROL_IP, IP_FOR_DMZ
@@ -18,7 +18,7 @@ def init(conf, vm_priv, vm_pub, door_priv, door_pub):
 	# Config
 	global CONFIG
 
-	# Miscellaneous
+	# Log
 	global LOG_LEVEL, COMMAND, DEBUG, INFO, WARNING, ERROR
 	
 	LISTEN_PORTS=2000
@@ -26,6 +26,7 @@ def init(conf, vm_priv, vm_pub, door_priv, door_pub):
 	SOCKET_PORTS=4000
 	CONTROL_PORT=5555
 	WIREGUARD_PORTS=6000
+	EXPOSE_PORTS=7000
 	WG_UDP_PORT=51820
 	WG_TCP_PORT=51819
 

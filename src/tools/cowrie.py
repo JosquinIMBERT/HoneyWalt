@@ -43,27 +43,6 @@ def gen_configurations():
 		i+=1
 
 
-def start_tunnels_to_dmz():
-	conf = glob.CONFIG
-	vm_ip="10.0.0.2"
-	i=0
-	template = Template("ssh -f -N -M -S ${socket} \
-		-L ${port}:${ip}:22 \
-		root@${vm_ip} \
-		-i ${key_path}")
-	for dev in conf["device"]:
-		tunnel_cmd = template.substitute({
-			"socket": to_root_path("run/ssh/cowrie-dmz/"+str(i)+".sock"),
-			"port": glob.BACKEND_PORTS+i,
-			"ip": dev["ip"],
-			"vm_ip": vm_ip,
-			"key_path": glob.VM_PRIV_KEY
-		})
-		error_msg = "failed to start tunnels between cowrie and dmz"
-		run(tunnel_cmd, error_msg)
-		i+=1
-
-
 def start():
 	conf = glob.CONFIG
 	i=0
@@ -78,42 +57,6 @@ def start():
 		error_msg = "failed to start cowrie"
 		run(cmd, error_msg)
 		i+=1
-
-
-def start_tunnels_to_doors():
-	conf = glob.CONFIG
-	template = Template("ssh -f -N -M -S ${socket} \
-		-R *:${fakessh_port}:127.0.0.1:${exposed_port} \
-		-i ${key_path} \
-		root@${host} \
-		-p ${realssh_port}")
-	i=0
-	for door in conf["door"]:
-		dev_id = find_id(conf["device"], door["dev"], "node")
-		tunnel_cmd = template.substitute({
-			"socket": to_root_path("run/ssh/cowrie-out/"+str(i)+".sock"),
-			"fakessh_port": 22,
-			"exposed_port": glob.LISTEN_PORTS+dev_id,
-			"key_path": glob.DOOR_PRIV_KEY,
-			"host": door["host"],
-			"realssh_port": door["realssh"]
-		})
-		error_msg = "failed to start tunnels between cowrie and doors"
-		run(tunnel_cmd, error_msg)
-		i+=1
-
-
-def stop_tunnels_to_dmz():
-	stop_tunnels("dmz")
-
-def stop_tunnels_to_doors():
-	stop_tunnels("out")
-
-def stop_tunnels(tunnel_type):
-	path = to_root_path("run/ssh/cowrie-"+tunnel_type)
-	for killpath in os.listdir(path):
-		if killpath.endswith(".sock"):
-			kill_from_file(os.path.join(path, killpath), filetype="ssh")
 
 
 def stop():
