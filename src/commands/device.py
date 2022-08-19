@@ -1,4 +1,4 @@
-import sys
+import sys, re
 
 from config import set_conf
 import glob
@@ -25,6 +25,11 @@ def device_add(options):
 
 	conf = glob.CONFIG
 
+	regex = re.compile(r'^(walt|docker|hub):[a-z0-9\-]+/[a-z0-9\-]+(:[a-z0-9\-]+)?$')
+	if regex.match(image):
+		log(glob.WARNING, image+" seem to be a cloneable image link. Extracting short name")
+		image = extract_short_name(image)
+
 	if find(conf["device"], name, "node") is not None or \
 	   find(conf["device"], mac_addr, "mac") is not None:
 		eprint("device already exists")
@@ -48,6 +53,11 @@ def device_chg(options):
 	
 	if new_name is None and new_image is None:
 		eprint("no new value was given")
+
+	regex = re.compile(r'^(walt|docker|hub):[a-z0-9\-]+/[a-z0-9\-]+(:[a-z0-9\-]+)?$')
+	if regex.match(new_image):
+		log(glob.WARNING, new_image+" seem to be a cloneable image link. Extracting short name")
+		new_image = extract_short_name(new_image)
 
 	conf = glob.CONFIG
 

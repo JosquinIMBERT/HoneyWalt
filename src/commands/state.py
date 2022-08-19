@@ -45,7 +45,7 @@ def honeywalt_start(options):
 	images = []
 	i=0
 	for img in glob.CONFIG["image"]:
-		images += [ img["name"] ]
+		images += [ img["short_name"] ]
 
 	# Initiate control
 	log(glob.INFO, "initiating VM control")

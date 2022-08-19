@@ -1,3 +1,5 @@
+import re
+
 from config import set_conf
 import glob
 from utils import *
@@ -19,10 +21,10 @@ def image_add(options):
 	username = None if options.user is None else options.user[0]
 	password = None if options.password is None else options.password[0]
 
-	# TODO: at some point, we need a cloneable image link for walt
-	#regex = re.compile("(walt|docker|hub):[a-z0-9\-]+/[a-z0-9\-]+(:[a-z0-9\-]+)?")
-	#if not regex.match(name):
-    #    eprint(name+" is not an image clonable link")
+	regex = re.compile(r'^(walt|docker|hub):[a-z0-9\-]+/[a-z0-9\-]+(:[a-z0-9\-]+)?$')
+	if not regex.match(name):
+		eprint(name+" is not a Walt image clonable link")
+	short_name = extract_short_name(name)
 
 	conf = glob.CONFIG
 
@@ -39,6 +41,7 @@ def image_add(options):
 
 	new_img = {
 		"name":name,
+		"short_name":short_name,
 		"user":username,
 		"pass":password
 	}
@@ -55,10 +58,23 @@ def image_chg(options):
 
 	conf = glob.CONFIG
 
-	image = find(conf["image"], name, "name")
+	# Find image name type (cloneable or short)
+	regex = re.compile(r'^(walt|docker|hub):[a-z0-9\-]+/[a-z0-9\-]+(:[a-z0-9\-]+)?$')
+	if not regex.match(name):
+		regex = re.compile(r'^[a-z0-9\-]+$')
+		if not regex.match(name):
+			eprint(name+" is not a Walt image name nor a clonable link")
+		else:
+			field="short_name"
+	else:
+		field="name"
+
+	# Find image
+	image = find(conf["image"], name, field)
 	if image is None:
 		eprint("image not found")
 
+	# Edit
 	if username is not None:
 		image["user"] = username
 	if password is not None:
@@ -70,11 +86,27 @@ def image_chg(options):
 def image_del(options):
 	img_name = options.name[0]
 
-	img_id = find_id(glob.CONFIG["image"], img_name, "name")
+	# Find image name type (cloneable or short)
+	regex = re.compile(r'^(walt|docker|hub):[a-z0-9\-]+/[a-z0-9\-]+(:[a-z0-9\-]+)?$')
+	if not regex.match(img_name):
+		regex = re.compile(r'[a-z0-9\-]+')
+		if not regex.match(img_name):
+			eprint(img_name+" is not a Walt image name nor a clonable link")
+		else:
+			field="short_name"
+	else:
+		field="name"
+
+	# Find image
+	img_id = find_id(glob.CONFIG["image"], img_name, field)
 	if img_id == -1:
 		eprint("unable to find image "+img_name)
 
-	dev = find(glob.CONFIG["device"], glob.CONFIG["image"][img_id]["name"], "image")
+	if field == "name":
+		short_name = extract_short_name(img_name)
+	else:
+		short_name = img_name
+	dev = find(glob.CONFIG["device"], short_name, "image")
 	if dev is not None:
 		eprint("device "+dev["node"]+" uses image "+img_name)
 
@@ -85,7 +117,7 @@ def image_del(options):
 
 def image_show(options):
 	conf = glob.CONFIG
-	print_object_array(conf["image"], ["name", "user", "pass"])
+	print_object_array(conf["image"], ["name", "short_name", "user", "pass"])
 
 
 def image_help():

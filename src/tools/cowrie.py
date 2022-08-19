@@ -18,7 +18,7 @@ def gen_configurations():
 	with open(to_root_path("var/template/cowrie_conf.txt"), "r") as temp_file:
 		temp = Template(temp_file.read())
 	for dev in conf["device"]:
-		img = find(conf["image"], dev["image"], "name")
+		img = find(conf["image"], dev["image"], "short_name")
 		if img is None:
 			eprint("image not found for device "+dev["node"])
 		backend_user = img["user"]

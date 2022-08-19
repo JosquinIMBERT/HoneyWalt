@@ -184,3 +184,7 @@ def delete(directory, suffix=""):
 		file = os.path.join(directory,name)
 		if file.endswith(suffix):
 			os.remove(file)
+
+# Extract the shortname from a cloneable image link
+def extract_short_name(name):
+	return (name.split("/", 1)[1]).split(":", 1)[0]
