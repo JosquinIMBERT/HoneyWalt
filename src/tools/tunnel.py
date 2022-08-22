@@ -121,7 +121,7 @@ def stop_tunnels(directory):
 			except:
 				log(
 					glob.WARNING,
-					"Failed to close a SSH tunnel. The control socket is: "+killpath
+					"Failed to close a SSH tunnel. The control socket is: "+str(killpath)
 				)
 
 def stop_exposure_tunnels():

@@ -130,7 +130,7 @@ def tunnels(state="up"):
 		except:
 			log(
 				glob.WARNING,
-				"Failed to set a wireguard interface "+state+" (door="+door["host"]+")."
+				"Failed to set a wireguard interface "+str(state)+" (door="+str(door["host"])+")."
 			)
 
 	i=0
@@ -142,7 +142,7 @@ def tunnels(state="up"):
 		except:
 			log(
 				glob.WARNING,
-				"Failed to set a wireguard interface "+state+" (vm, client "+i+")."
+				"Failed to set a wireguard interface "+str(state)+" (vm, client "+str(i)+")."
 			)
 		i+=1
 
@@ -189,7 +189,7 @@ def stop_tcp_tunnels():
 		except:
 			log(
 				glob.WARNING,
-				"Failed to stop a traffic shaper (door: "+door["host"]+")."
+				"Failed to stop a traffic shaper (door: "+str(door["host"])+")."
 			)
 	path = to_root_path("run/wg_tcp_adapter")
 	for pidpath in os.listdir(path):
@@ -199,5 +199,5 @@ def stop_tcp_tunnels():
 			except:
 				log(
 					glob.WARNING,
-					"Failed to stop a traffic shaper (pidfile:"+pidpath+")."
+					"Failed to stop a traffic shaper (pidfile:"+str(pidpath)+")."
 				)

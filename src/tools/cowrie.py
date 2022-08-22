@@ -68,7 +68,7 @@ def stop():
 			except:
 				log(
 					glob.WARNING,
-					"Failed to stop a cowrie instance. The pid file is: "+pidpath
+					"Failed to stop a cowrie instance. The pid file is: "+str(pidpath)
 				)
 
 

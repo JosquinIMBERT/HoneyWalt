@@ -50,5 +50,5 @@ def stop():
 			pass
 	log(
 		glob.WARNING,
-		"Failed to stop the VM (pidfile:"+path+")."
+		"Failed to stop the VM (pidfile:"+str(path)+")."
 	)
