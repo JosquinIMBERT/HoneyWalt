@@ -157,7 +157,7 @@ def start_tcp_tunnels():
 	tcp_host = "0.0.0.0"
 	tcp_port = glob.WG_TCP_PORT
 	door_args = udp_ip+" "+str(udp_port)+" "+tcp_host+" "+str(tcp_port)
-	door_cmd = "python3 /root/wg_tcp_adapter.py /root/tunnel.pid door "+door_args+" &"
+	door_cmd = "python3 /root/HoneyWalt_door/traffic-shaper.py /root/tunnel.pid "+door_args+" &"
 	for door in glob.CONFIG["door"]:
 		# https://stackoverflow.com/questions/18569588/ssh-remote-command-does-not-return
 		# It seems like the only way to run the program in background is to also keep the ssh connection locally in background
@@ -171,9 +171,9 @@ def start_tcp_tunnels():
 		tcp_host=find(glob.CONFIG["door"], dev["node"], "dev")["host"]
 		tcp_port=glob.WG_TCP_PORT
 		local_args = udp_lo_host+" "+str(udp_lo_port)+" "+tcp_host+" "+str(tcp_port)
-		prog = to_root_path("src/tools/wg_tcp_adapter.py")
-		pid_file = to_root_path("run/wg_tcp_adapter/tunnel"+str(i)+".pid")
-		local_cmd = "python3 "+prog+" "+pid_file+" controller "+local_args+" &"
+		prog = to_root_path("src/tools/traffic-shaper.py")
+		pid_file = to_root_path("run/traffic-shaper/tunnel"+str(i)+".pid")
+		local_cmd = "python3 "+prog+" "+pid_file+" "+local_args+" &"
 		run(local_cmd, "failed to start udp/tcp adapter")
 		i+=1
 
@@ -191,7 +191,7 @@ def stop_tcp_tunnels():
 				glob.WARNING,
 				"Failed to stop a traffic shaper (door: "+str(door["host"])+")."
 			)
-	path = to_root_path("run/wg_tcp_adapter")
+	path = to_root_path("run/traffic-shaper")
 	for pidpath in os.listdir(path):
 		if pidpath.endswith(".pid"):
 			try:

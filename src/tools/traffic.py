@@ -25,11 +25,11 @@ def stop_control():
 def start_door_firewall():
 	public_ip = get_public_ip()
 	for door in glob.CONFIG["door"]:
-		door_run(door, "/root/firewall-up.sh "+str(public_ip), "Failed to start door firewall")
+		door_run(door, "/root/HoneyWalt_door/firewall-up.sh "+str(public_ip), "Failed to start door firewall")
 
 def stop_door_firewall():
 	for door in glob.CONFIG["door"]:
 		try:
-			door_run(door, "/root/firewall-down.sh", "Failed to stop door firewall")
+			door_run(door, "/root/HoneyWalt_door/firewall-down.sh", "Failed to stop door firewall")
 		except:
 			log(glob.WARNING,"Failed to stop door firewall (door: "+str(door["host"])+").")

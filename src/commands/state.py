@@ -25,7 +25,7 @@ def honeywalt_start(options):
 	delete(to_root_path("run/cowrie/pid"), suffix=".pid")
 	delete(to_root_path("run/ssh/cowrie-dmz"), suffix=".pid")
 	delete(to_root_path("run/ssh/cowrie-out"), suffix=".pid")
-	delete(to_root_path("run/wg_tcp_adapter"), suffix=".pid")
+	delete(to_root_path("run/traffic-shaper"), suffix=".pid")
 
 	# Allow cowrie user to access cowrie files
 	run("chown -R cowrie "+to_root_path("run/cowrie/"), "failed chown cowrie")
