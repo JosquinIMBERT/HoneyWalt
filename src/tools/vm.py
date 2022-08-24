@@ -35,7 +35,7 @@ def phase():
 def stop():
 	# Trying soft shutdown (run shutdown command)
 	try:
-		vm_run("shutdown now", timeout=10)
+		vm_run("init 0", timeout=10)
 		return
 	except subprocess.TimeoutExpired:
 		log(glob.WARNING, "soft shutdown failed. Starting hard shutdown.")
