@@ -11,7 +11,7 @@ import glob
 ## START UTILS ##
 #################
 
-def gen_sock_filename(directory):
+def gen_sock_filename(socketdir):
 	# Warning: using a __deprecated__ function
 	# May need to be changed, but I think the ssh
 	# command expects that the file doesn't exist
@@ -54,6 +54,8 @@ def start_tunnel_controller_dmz(socketdir, local_port, dev_ip, dev_port):
 		"vm_ip": glob.VM_IP,
 		"key_path": glob.VM_PRIV_KEY
 	})
+	error_msg = "failed to start tunnel between controller and dmz"
+	run(tunnel_cmd, error_msg)
 
 
 
