@@ -1,4 +1,4 @@
-import errno, os, signal, sys, traceback, subprocess
+import errno, json, os, requests, signal, sys, traceback, subprocess
 from os.path import abspath, dirname, exists, join
 from string import Template
 
@@ -205,3 +205,13 @@ def delete(directory, suffix=""):
 # Extract the shortname from a cloneable image link
 def extract_short_name(name):
 	return (name.split("/", 1)[1]).split(":", 1)[0]
+
+# Source: https://pytutorial.com/python-get-public-ip
+def get_public_ip():
+    endpoint = 'https://ipinfo.io/json'
+    response = requests.get(endpoint, verify = True)
+    if response.status_code != 200:
+        return 'Status:', response.status_code, 'Problem with the request. Exiting.'
+        exit()
+    data = response.json()
+    return data['ip']

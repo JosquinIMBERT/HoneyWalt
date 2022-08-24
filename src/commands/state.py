@@ -60,6 +60,10 @@ def honeywalt_start(options):
 	log(glob.INFO, "starting cowrie")
 	cowrie.start()
 
+	# Start doors firewalls
+	log(glob.INFO, "starting doors firewalls")
+	traffic.start_door_firewall()
+
 	# Start wireguard
 	log(glob.INFO, "starting wireguard")
 	wg.start_tunnels()
@@ -158,6 +162,8 @@ def honeywalt_stop(options):
 	vm.stop()
 	log(glob.INFO, "stopping traffic control")
 	traffic.stop_control()
+	log(glob.INFO, "stopping doors firewalls")
+	traffic.stop_door_firewall()
 
 
 def honeywalt_restart(options):
