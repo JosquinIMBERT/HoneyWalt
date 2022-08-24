@@ -1,4 +1,4 @@
-import os, signal
+import os, signal, subprocess
 from os.path import exists
 from string import Template
 
@@ -37,7 +37,7 @@ def stop():
 	try:
 		vm_run("shutdown now", timeout=10)
 		return
-	except TimeoutExpired:
+	except subprocess.TimeoutExpired:
 		log(glob.WARNING, "soft shutdown failed. Starting hard shutdown.")
 
 	# Hard shutdown (kill qemu process)
