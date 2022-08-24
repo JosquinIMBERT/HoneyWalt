@@ -64,7 +64,7 @@ def start_tunnel_controller_dmz(socketdir, local_port, dev_ip, dev_port):
 
 def start_exposure_tunnels():
 	for dev in glob.CONFIG["device"]:
-		door = find(conf["door"], dev["node"], "dev")
+		door = find(glob.CONFIG["door"], dev["node"], "dev")
 		for port in dev["ports"]:
 			# Controller --> Device
 			start_tunnel_controller_dmz(
@@ -84,8 +84,8 @@ def start_exposure_tunnels():
 
 def start_cowrie_tunnels_out():
 	i=0
-	for door in conf["door"]:
-		dev_id = find_id(conf["device"], door["dev"], "node")
+	for door in glob.CONFIG["door"]:
+		dev_id = find_id(glob.CONFIG["device"], door["dev"], "node")
 		start_tunnel_door_controller(
 			to_root_path("run/ssh/cowrie-out/"),
 			22,
@@ -96,7 +96,7 @@ def start_cowrie_tunnels_out():
 
 def start_cowrie_tunnels_dmz():
 	i=0
-	for dev in conf["device"]:
+	for dev in glob.CONFIG["device"]:
 		start_tunnel_controller_dmz(
 			to_root_path("run/ssh/cowrie-dmz/"),
 			glob.BACKEND_PORTS+i,
