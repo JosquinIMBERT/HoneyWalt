@@ -73,6 +73,7 @@ iptables -t mangle -P POSTROUTING ACCEPT
 
 iptables -A PREROUTING -t mangle -p udp -d $addr_dmz_side --dport $port_range -j ACCEPT
 iptables -A PREROUTING -t mangle -p tcp	-m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A PREROUTING -t mangle -d 127.0.0.1 -i lo -j ACCEPT
 iptables -t mangle -P PREROUTING DROP
 
 
